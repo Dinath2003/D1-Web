@@ -4117,3 +4117,124 @@ footer {
   }
 }
 
+/* ── 3D MYTHICAL ORBITING CREST WIDGET ──────────────────── */
+.mythical-crest-3d-container {
+  perspective: 1200px;
+  width: 260px;
+  height: 260px;
+  margin: 10px auto 25px auto;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.mythical-orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.mythical-orbit-ring.ring-outer {
+  width: 240px;
+  height: 240px;
+  border: 1.5px dashed rgba(234, 170, 0, 0.35);
+  box-shadow: 0 0 15px rgba(234, 170, 0, 0.08);
+  transform: rotateX(70deg) rotateY(15deg) rotateZ(0deg);
+  animation: orbit-rotate-outer 25s infinite linear;
+}
+
+.mythical-orbit-ring.ring-inner {
+  width: 170px;
+  height: 170px;
+  border: 1px solid rgba(118, 35, 47, 0.45);
+  box-shadow: 0 0 15px rgba(118, 35, 47, 0.08);
+  transform: rotateX(65deg) rotateY(-20deg) rotateZ(0deg);
+  animation: orbit-rotate-inner 18s infinite linear reverse;
+}
+
+@keyframes orbit-rotate-outer {
+  0% { transform: rotateX(70deg) rotateY(15deg) rotateZ(0deg); }
+  100% { transform: rotateX(70deg) rotateY(15deg) rotateZ(360deg); }
+}
+
+@keyframes orbit-rotate-inner {
+  0% { transform: rotateX(65deg) rotateY(-20deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateY(-20deg) rotateZ(360deg); }
+}
+
+.mythical-crest-card {
+  width: 120px;
+  height: 120px;
+  background: linear-gradient(135deg, rgba(38, 6, 10, 0.95) 0%, rgba(13, 2, 4, 0.98) 100%);
+  border: 2px solid var(--color-gold);
+  border-radius: 30px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.75), 0 0 35px rgba(234, 170, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  animation: crest-float 6s infinite alternate ease-in-out;
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.4s var(--transition-ease), box-shadow 0.4s var(--transition-ease);
+}
+
+.mythical-crest-card:hover {
+  border-color: #fff;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8), 0 0 45px rgba(255, 180, 0, 0.45);
+}
+
+@keyframes crest-float {
+  0% { transform: translateY(0px) rotateY(-6deg) rotateX(12deg); }
+  100% { transform: translateY(-14px) rotateY(8deg) rotateX(-6deg); }
+}
+
+.crest-shine {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 28px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.crest-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(25px); /* push elements forward in 3D perspective space */
+  transform-style: preserve-3d;
+}
+
+.crest-icon {
+  font-size: 3.2rem;
+  background: linear-gradient(to bottom, #fff9f2 0%, var(--color-gold) 60%, var(--color-amber) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(234, 170, 0, 0.5));
+}
+
+.crest-icon-crown {
+  position: absolute;
+  top: 10px;
+  font-size: 1.1rem;
+  color: var(--color-gold);
+  text-shadow: 0 3px 12px rgba(234, 170, 0, 0.7);
+  transform: translateZ(15px); /* double layered 3D depth! */
+  pointer-events: none;
+}
+
+.crest-glow-point {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: radial-gradient(circle, rgba(234, 170, 0, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+}
+

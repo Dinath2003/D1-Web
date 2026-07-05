@@ -1907,6 +1907,24 @@ window.addEventListener('DOMContentLoaded', () => {
   checkActiveSession();
   createAmbientParticles();
 
+  // Mouse tilt tracking for 3D Mythical Crest
+  const heroCrest = document.getElementById('hero-mythical-crest');
+  if (heroCrest) {
+    heroCrest.addEventListener('mousemove', (e) => {
+      const rect = heroCrest.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      const tiltX = -(y / (rect.height / 2)) * 25;
+      const tiltY = (x / (rect.width / 2)) * 25;
+      heroCrest.style.animation = 'none';
+      heroCrest.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.05)`;
+    });
+    heroCrest.addEventListener('mouseleave', () => {
+      heroCrest.style.animation = 'crest-float 6s infinite alternate ease-in-out';
+      heroCrest.style.transform = '';
+    });
+  }
+
   // Load and render public dynamic blocks
   renderPublicCouncil();
   renderPublicProjects();
