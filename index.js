@@ -604,8 +604,9 @@ function buildPublicCard(m) {
   const presClass = m.priority ? ' president-profile' : '';
   const crownHtml = m.priority ? '<div class="president-crown-badge"><i class="fa-solid fa-crown"></i></div>' : '';
   const tagHtml = m.tag ? `<span class="member-tag">${m.tag}</span>` : '';
+  const photoStyle = `style="transform: scale(${m.photoScale || 1}); object-position: ${m.photoX || 50}% ${m.photoY || 50}%;"`;
   const photoHtml = m.photo
-    ? `<img src="${m.photo}" alt="${m.name}" class="profile-img">`
+    ? `<img src="${m.photo}" alt="${m.name}" class="profile-img" ${photoStyle}>`
     : `<div class="profile-icon-fallback"><i class="fa-solid ${m.icon || 'fa-user'}"></i></div>`;
 
   return `
@@ -754,8 +755,9 @@ function renderPublicPresidents() {
     const card = document.createElement('div');
     card.className = 'leo-member-card glass-panel';
     
+    const photoStyle = `style="width:100%;height:100%;object-fit:cover;border-radius:inherit;transform: scale(${p.photoScale || 1}); object-position: ${p.photoX || 50}% ${p.photoY || 50}%;"`;
     const photoHtml = p.photo 
-      ? `<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` 
+      ? `<img src="${p.photo}" ${photoStyle}>` 
       : `<i class="fa-solid fa-user-astronaut"></i>`;
 
     card.innerHTML = `
@@ -1008,7 +1010,8 @@ function renderAdminTable(section) {
     const tr = document.createElement('tr');
     
     if (section === 'council') {
-      const img = item.photo ? `<img src="${item.photo}" class="thumbnail">` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid ${item.icon || 'fa-user'}"></i></div>`;
+      const photoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
+      const img = item.photo ? `<img src="${item.photo}" class="thumbnail" ${photoStyle}>` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid ${item.icon || 'fa-user'}"></i></div>`;
       tr.innerHTML = `
         <td>${img}</td>
         <td><strong>${item.name}</strong></td>
@@ -1046,7 +1049,8 @@ function renderAdminTable(section) {
       `;
     } 
     else if (section === 'presidents') {
-      const img = item.photo ? `<img src="${item.photo}" class="thumbnail">` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-user-tie"></i></div>`;
+      const photoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
+      const img = item.photo ? `<img src="${item.photo}" class="thumbnail" ${photoStyle}>` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-user-tie"></i></div>`;
       tr.innerHTML = `
         <td>${img}</td>
         <td><strong>${item.name}</strong></td>
@@ -1257,6 +1261,28 @@ function openEditorModal(section, recordId = null) {
           <input type="number" id="c-order" value="${data.displayOrder || records.length + 1}" required>
         </div>
       </div>
+      
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 90px; height: 90px; border-radius: 16px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
     `;
   } 
   else if (section === 'projects') {
@@ -1417,6 +1443,28 @@ function openEditorModal(section, recordId = null) {
           </select>
         </div>
       </div>
+
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 90px; height: 90px; border-radius: 16px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
     `;
   }
   else if (section === 'clubs') {
@@ -1527,7 +1575,25 @@ function cacheFile(input, key) {
   if (input.files && input.files[0]) {
     compressImage(input.files[0], (base64) => {
       editorImageCache[key] = base64;
+      
+      const previewImg = document.getElementById('crop-preview-img');
+      const widget = document.getElementById('image-adjust-widget');
+      if (previewImg && widget) {
+        previewImg.src = base64;
+        widget.style.display = 'flex';
+      }
     });
+  }
+}
+
+function updateCropPreview() {
+  const img = document.getElementById('crop-preview-img');
+  const zoom = document.getElementById('crop-zoom').value;
+  const x = document.getElementById('crop-x').value;
+  const y = document.getElementById('crop-y').value;
+  if (img) {
+    img.style.transform = `scale(${zoom})`;
+    img.style.objectPosition = `${x}% ${y}%`;
   }
 }
 
@@ -1548,6 +1614,9 @@ function handleEditorSubmit(e) {
   const records = getCollection(key);
 
   if (section === 'council') {
+    const cropZoom = document.getElementById('crop-zoom');
+    const cropX = document.getElementById('crop-x');
+    const cropY = document.getElementById('crop-y');
     const record = {
       id: recordId || `c-${Date.now()}`,
       name: document.getElementById('c-name').value.trim(),
@@ -1557,7 +1626,10 @@ function handleEditorSubmit(e) {
       status: document.getElementById('c-status').value,
       year: document.getElementById('c-year').value,
       displayOrder: parseInt(document.getElementById('c-order').value),
-      icon: 'fa-user'
+      icon: 'fa-user',
+      photoScale: cropZoom ? parseFloat(cropZoom.value) : 1,
+      photoX: cropX ? parseInt(cropX.value) : 50,
+      photoY: cropY ? parseInt(cropY.value) : 50
     };
     
     // Manage image persistence
@@ -1618,6 +1690,9 @@ function handleEditorSubmit(e) {
     }
   } 
   else if (section === 'presidents') {
+    const cropZoom = document.getElementById('crop-zoom');
+    const cropX = document.getElementById('crop-x');
+    const cropY = document.getElementById('crop-y');
     const record = {
       id: recordId || `pr-${Date.now()}`,
       name: document.getElementById('pr-name').value.trim(),
@@ -1629,7 +1704,10 @@ function handleEditorSubmit(e) {
       email: document.getElementById('pr-email').value.trim(),
       bio: document.getElementById('pr-bio').value.trim(),
       status: document.getElementById('pr-status').value,
-      displayOrder: parseInt(document.getElementById('pr-order').value)
+      displayOrder: parseInt(document.getElementById('pr-order').value),
+      photoScale: cropZoom ? parseFloat(cropZoom.value) : 1,
+      photoX: cropX ? parseInt(cropX.value) : 50,
+      photoY: cropY ? parseInt(cropY.value) : 50
     };
 
     if (editorImageCache['photo']) {
