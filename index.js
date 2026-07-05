@@ -755,7 +755,7 @@ function renderPublicPresidents() {
     card.className = 'leo-member-card glass-panel';
     
     const photoHtml = p.photo 
-      ? `<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` 
+      ? `<img src="${p.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;">` 
       : `<i class="fa-solid fa-user-astronaut"></i>`;
 
     card.innerHTML = `
