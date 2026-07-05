@@ -1857,11 +1857,42 @@ function subscribeNewsletterFooter() {
   document.getElementById('footer-newsletter-email').value = '';
 }
 
+function createAmbientParticles() {
+  const containers = document.querySelectorAll('.page-view');
+  containers.forEach(container => {
+    if (container.querySelector('.ambient-particles-container')) return;
+
+    const particleWrapper = document.createElement('div');
+    particleWrapper.className = 'ambient-particles-container';
+    particleWrapper.style.position = 'absolute';
+    particleWrapper.style.top = '0';
+    particleWrapper.style.left = '0';
+    particleWrapper.style.width = '100%';
+    particleWrapper.style.height = '100%';
+    particleWrapper.style.overflow = 'hidden';
+    particleWrapper.style.pointerEvents = 'none';
+    particleWrapper.style.zIndex = '0';
+    container.appendChild(particleWrapper);
+
+    const particleCount = 20;
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('div');
+      p.className = 'ambient-particle';
+      p.style.left = `${Math.random() * 100}%`;
+      p.style.top = `${Math.random() * 100}%`;
+      p.style.animationDelay = `${Math.random() * 6}s`;
+      p.style.animationDuration = `${4 + Math.random() * 8}s`;
+      particleWrapper.appendChild(p);
+    }
+  });
+}
+
 // ── INITIALIZATION ──────────────────────────────────────────
 
 window.addEventListener('DOMContentLoaded', () => {
   initDatabase();
   checkActiveSession();
+  createAmbientParticles();
 
   // Load and render public dynamic blocks
   renderPublicCouncil();

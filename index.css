@@ -9,11 +9,11 @@
   --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* ── Backgrounds ── */
-  --bg-dark:       #070102;
-  --bg-secondary:  #0e0305;
-  --bg-card:       rgba(22, 5, 8, 0.72);
-  --bg-card-hover: rgba(34, 8, 13, 0.88);
-  --bg-nav:        rgba(14, 3, 5, 0.80);
+  --bg-dark:       #0d0204;  /* Deep warm burgundy black */
+  --bg-secondary:  #140306;  /* Warm secondary maroon */
+  --bg-card:       rgba(26, 4, 7, 0.75); /* Deep maroon glass panel */
+  --bg-card-hover: rgba(38, 6, 10, 0.90);
+  --bg-nav:        rgba(13, 2, 4, 0.85);
 
   /* ── Brand Colors ── */
   --color-gold:    #EAAA00;  /* Leo Gold (#EAAA00) */
@@ -797,7 +797,7 @@ body {
   filter: blur(120px);
   opacity: 0.25;
   mix-blend-mode: screen;
-  animation: none;
+  animation: float-glow 20s infinite ease-in-out;
 }
 
 .glow-node-1 {
@@ -1185,9 +1185,14 @@ footer {
 }
 
 .reveal {
-  opacity: 1 !important;
-  transform: none !important;
-  transition: none !important;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s var(--transition-ease), transform 0.8s var(--transition-ease);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* --- RESPONSIVE BRACKETS --- */
@@ -4021,6 +4026,60 @@ footer {
   .region-branch .zones-row {
     grid-template-columns: 1fr;
     gap: 30px;
+  }
+}
+
+/* ── LEO NEXUS AMBIENT EFFECTS ─────────────────────────── */
+.vertical-light-beam {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 90%;
+  background: linear-gradient(to bottom,
+    rgba(234, 170, 0, 0) 0%,
+    rgba(234, 170, 0, 0.4) 15%,
+    rgba(255, 180, 0, 0.7) 40%,
+    rgba(255, 180, 0, 0.7) 60%,
+    rgba(234, 170, 0, 0.4) 85%,
+    rgba(234, 170, 0, 0) 100%
+  );
+  filter: blur(4px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.vertical-light-beam::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -150px;
+  width: 300px;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(234, 170, 0, 0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.ambient-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--color-gold);
+  opacity: 0;
+  pointer-events: none;
+  animation: fade-pulse-particle infinite ease-in-out;
+}
+
+@keyframes fade-pulse-particle {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(0) scale(0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-20px) scale(1.2);
   }
 }
 
