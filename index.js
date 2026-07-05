@@ -1874,14 +1874,27 @@ function createAmbientParticles() {
     particleWrapper.style.zIndex = '0';
     container.appendChild(particleWrapper);
 
-    const particleCount = 20;
+    const particleCount = 25;
     for (let i = 0; i < particleCount; i++) {
       const p = document.createElement('div');
       p.className = 'ambient-particle';
+      
+      const size = 1 + Math.random() * 3;
+      const drift = -80 + Math.random() * 160;
+      const isGold = Math.random() > 0.4;
+      const color = isGold ? 'rgba(234, 170, 0, 0.85)' : 'rgba(118, 35, 47, 0.9)';
+      const shadow = isGold ? '0 0 8px rgba(234, 170, 0, 0.8)' : '0 0 8px rgba(118, 35, 47, 0.8)';
+      
+      p.style.width = `${size}px`;
+      p.style.height = `${size}px`;
+      p.style.background = color;
+      p.style.boxShadow = shadow;
+      p.style.setProperty('--drift', `${drift}px`);
       p.style.left = `${Math.random() * 100}%`;
-      p.style.top = `${Math.random() * 100}%`;
-      p.style.animationDelay = `${Math.random() * 6}s`;
-      p.style.animationDuration = `${4 + Math.random() * 8}s`;
+      p.style.bottom = `${Math.random() * 20}%`;
+      p.style.animationDelay = `${Math.random() * 8}s`;
+      p.style.animationDuration = `${6 + Math.random() * 12}s`;
+      
       particleWrapper.appendChild(p);
     }
   });

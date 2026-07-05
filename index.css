@@ -4061,25 +4061,59 @@ footer {
   pointer-events: none;
 }
 
-.ambient-particle {
+/* ── PHOENIX / RISING EMBERS AMBIENT EFFECTS ────────────── */
+.phoenix-aura-halo {
   position: absolute;
-  width: 2px;
-  height: 2px;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  height: 600px;
   border-radius: 50%;
-  background: var(--color-gold);
-  opacity: 0;
+  background: radial-gradient(circle, 
+    rgba(118, 35, 47, 0.20) 0%, 
+    rgba(234, 170, 0, 0.10) 40%, 
+    transparent 70%
+  );
+  filter: blur(50px);
+  animation: aura-pulse 10s infinite alternate ease-in-out;
   pointer-events: none;
-  animation: fade-pulse-particle infinite ease-in-out;
+  z-index: 0;
 }
 
-@keyframes fade-pulse-particle {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(0) scale(0.8);
+@keyframes aura-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0.9) rotate(0deg);
+    opacity: 0.65;
   }
-  50% {
-    opacity: 0.6;
-    transform: translateY(-20px) scale(1.2);
+  100% {
+    transform: translate(-50%, -50%) scale(1.1) rotate(15deg);
+    opacity: 0.95;
+  }
+}
+
+.ambient-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  animation: ember-rise infinite linear;
+}
+
+@keyframes ember-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(100px) translateX(0) scale(0.5) rotate(0deg);
+  }
+  10% {
+    opacity: 0.8;
+  }
+  90% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-80vh) translateX(var(--drift, 40px)) scale(1.3) rotate(360deg);
   }
 }
 
