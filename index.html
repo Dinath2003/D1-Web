@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leo District 306 D1 — Empowering Communities, Inspiring Leaders</title>
+  <meta name="description" content="Official portal of Leo District 306 D1. Explore our humanitarian service projects, council members, Leo clubs, and leadership history.">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+
+  <div class="bg-glow-wrapper">
+    <div class="glow-node-spotlight"></div>
+    <div class="glow-node glow-node-1"></div>
+    <div class="glow-node glow-node-2"></div>
+    <div class="glow-node glow-node-3"></div>
+  </div>
+
+  <!-- FIXED NAVIGATION HEADER -->
+  <header id="main-header">
+    <a class="logo" onclick="navigateTo('home')">
+      <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <span>LEO DISTRICT 306 D1</span>
+    </a>
+    
+    <nav id="nav-menu">
+      <a class="nav-link active" onclick="navigateTo('home')">Home</a>
+      <a class="nav-link" onclick="navigateTo('about')">About Us</a>
+      <a class="nav-link" onclick="navigateTo('council')">Council</a>
+      <a class="nav-link" onclick="navigateTo('projects')">District Projects</a>
+      <a class="nav-link" onclick="navigateTo('leos')">Leo Clubs</a>
+      <a class="nav-link" onclick="navigateTo('presidents')">Past District Presidents</a>
+      <a class="nav-link" onclick="navigateTo('nexus-portal')">Nexus Portal</a>
+      <div class="nav-indicator" id="nav-indicator"></div>
+    </nav>
+    
+    <button class="btn-header" id="portal-header-btn" onclick="handlePortalHeaderClick()">Portal Login</button>
+    
+    <button class="mobile-nav-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
+
+  <!-- MAIN CONTENT SECTIONS -->
+  <main>
+       <!-- 1. HOME PAGE -->
+    <section id="home" class="page-view active">
+      <!-- Agex-Inspired Hero Section -->
+      <div class="agex-hero-container">
+        <div class="agex-badge-pill">District 306 D1 Sri Lanka</div>
+        
+        <h1 class="agex-title">
+          The Future of Youth Service <br>
+          <span class="gradient-text">Starts with Leo D1</span>
+        </h1>
+        
+        <p class="agex-subtitle">
+          Plan less, serve more. The unified administrative nexus for youth volunteerism and leadership development.
+        </p>
+
+        <!-- Agex Contact/Search bar -->
+        <div class="agex-search-bar">
+          <div class="agex-input-group">
+            <i class="fa-regular fa-envelope input-icon"></i>
+            <input type="text" placeholder="Search club registry or enter email..." id="agex-search-input">
+          </div>
+          <button class="agex-btn-submit" onclick="navigateTo('leos')">Search Clubs</button>
+        </div>
+
+        <!-- Agex Interactive Showcase Dashboard Mockup -->
+        <div class="agex-dashboard-showcase glass-panel">
+          
+          <!-- Dashboard Header -->
+          <div class="dash-showcase-header">
+            <div class="header-logo">
+              <i class="fa-solid fa-circle-nodes logo-icon"></i>
+              <span>Eagle Nexus</span>
+            </div>
+            <nav class="header-nav">
+              <span class="active">Dashboard</span>
+              <span onclick="navigateTo('council')">Council</span>
+              <span onclick="navigateTo('projects')">Projects</span>
+              <span onclick="navigateTo('leos')">Clubs</span>
+            </nav>
+            <div class="header-user">
+              <div class="add-user-btn" onclick="navigateTo('council')"><i class="fa-solid fa-user-plus"></i> Add member</div>
+              <div class="user-avatar"><i class="fa-solid fa-user-shield"></i></div>
+            </div>
+          </div>
+
+          <!-- Dashboard Grid -->
+          <div class="dash-showcase-grid">
+            
+            <!-- Left Panel: Sidebar Nav -->
+            <div class="dash-sidebar">
+              <div class="nav-item active"><i class="fa-solid fa-table-columns"></i> Dashboard</div>
+              <div class="nav-item" onclick="navigateTo('projects')"><i class="fa-solid fa-list-check"></i> Tasks</div>
+              <div class="nav-item" onclick="navigateTo('about')"><i class="fa-solid fa-envelope"></i> Messages</div>
+              <div class="nav-item" onclick="navigateTo('leos')"><i class="fa-solid fa-chart-simple"></i> Activity</div>
+              <div class="nav-item" onclick="navigateTo('council')"><i class="fa-solid fa-calendar-days"></i> Calendar</div>
+              <div class="nav-item" onclick="navigateTo('presidents')"><i class="fa-solid fa-sliders"></i> Options</div>
+            </div>
+
+            <!-- Center Panel: Metrics & Charts -->
+            <div class="dash-main">
+              <div class="dash-metrics-row">
+                <div class="metric-box glass-panel">
+                  <span class="label">Active Members</span>
+                  <div class="value-row">
+                    <span class="value">1,200+</span>
+                    <span class="badge positive">● Live</span>
+                  </div>
+                </div>
+                <div class="metric-box glass-panel">
+                  <span class="label">Active Clubs</span>
+                  <div class="value-row">
+                    <span class="value">42</span>
+                    <span class="badge neutral">Region A/B</span>
+                  </div>
+                </div>
+                <div class="metric-box glass-panel">
+                  <span class="label">Completed Projects</span>
+                  <div class="value-row">
+                    <span class="value">68</span>
+                    <span class="badge positive">98% Success</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Charts & Log Row -->
+              <div class="dash-charts-row">
+                <!-- Bar Chart -->
+                <div class="chart-box glass-panel">
+                  <h4>Tracking History</h4>
+                  <div class="bar-chart-mock">
+                    <div class="bar-wrapper">
+                      <div class="bar" style="height: 40%;"></div>
+                      <span class="label">Mon</span>
+                    </div>
+                    <div class="bar-wrapper">
+                      <div class="bar" style="height: 65%;"></div>
+                      <span class="label">Tue</span>
+                    </div>
+                    <div class="bar-wrapper">
+                      <div class="bar" style="height: 90%;"></div>
+                      <span class="label">Wed</span>
+                    </div>
+                    <div class="bar-wrapper">
+                      <div class="bar" style="height: 50%;"></div>
+                      <span class="label">Thu</span>
+                    </div>
+                    <div class="bar-wrapper">
+                      <div class="bar" style="height: 80%;"></div>
+                      <span class="label">Fri</span>
+                    </div>
+                    <div class="bar-wrapper">
+                      <div class="bar" style="height: 95%;"></div>
+                      <span class="label">Sat</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="activities-box glass-panel">
+                  <h4>Recent activities</h4>
+                  <div class="activity-item">
+                    <div class="bullet"></div>
+                    <div class="info">
+                      <p class="title">Region A completed Eye Screening Clinic</p>
+                      <span class="time">2min ago</span>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="bullet"></div>
+                    <div class="info">
+                      <p class="title">Leo Club Galle Heritage updated officers</p>
+                      <span class="time">15min ago</span>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <div class="bullet"></div>
+                    <div class="info">
+                      <p class="title">District Vice President approved grants</p>
+                      <span class="time">1h ago</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Agex Partner Logos Row -->
+        <div class="agex-logos-row">
+          <span>Region A</span>
+          <span>Region B</span>
+          <span>Zone A1</span>
+          <span>Zone A2</span>
+          <span>Zone B1</span>
+          <span>Zone B2</span>
+        </div>
+
+      </div>
+
+      <!-- Feature Grid: Do less administration. Serve more communities. -->
+      <div class="agex-features-section">
+        <div class="agex-badge-pill">Key Features</div>
+        <h2 class="section-title">
+          Do less administration. <br>
+          <span class="gradient-text">Serve more communities.</span>
+        </h2>
+
+        <div class="agex-features-grid">
+          
+          <!-- Card 1 -->
+          <div class="agex-feature-card glass-panel">
+            <span class="card-badge">Prompt to Task</span>
+            <h3>Executive Command</h3>
+            <p>Direct cabinet executive controls, member profile modifications, and central databases.</p>
+            <div class="card-mockup">
+              <div class="mock-input glass-panel">
+                <i class="fa-solid fa-terminal text-gold"></i>
+                <span>Add member to executive committee...</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="agex-feature-card glass-panel">
+            <span class="card-badge">Nexus Directory</span>
+            <h3>Leo Clubs Nexus</h3>
+            <p>Instant directory queries, club profiling, geographic region mappings, and officer details.</p>
+            <div class="card-mockup">
+              <div class="mock-list">
+                <div class="mock-list-item"><i class="fa-solid fa-shield text-gold"></i> Galle Heritage</div>
+                <div class="mock-list-item"><i class="fa-solid fa-shield text-gold"></i> Colombo Circle</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="agex-feature-card glass-panel">
+            <span class="card-badge">Agex Focus Mode</span>
+            <h3>Impact Statistics</h3>
+            <p>Real-time service outcome tracking, monthly report logs, and community welfare indicators.</p>
+            <div class="card-mockup">
+              <div class="mock-progress">
+                <div class="progress-bar-wrapper">
+                  <div class="progress-bar-fill" style="width: 75%;"></div>
+                </div>
+                <span class="percent">75%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="agex-feature-card glass-panel">
+            <span class="card-badge">Leadership Timeline</span>
+            <h3>Hall of Presidents</h3>
+            <p>Interactive historical records, theme timelines, and leadership legacy directories.</p>
+            <div class="card-mockup">
+              <div class="mock-timeline">
+                <div class="timeline-step active">2026</div>
+                <div class="timeline-step">2025</div>
+                <div class="timeline-step">2024</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ABOUT US PAGE -->
+    <section id="about" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">Unifying Service & Vision</h2>
+        <p class="subtitle">Leo District 306 D1 has been a beacon of service, creating community solutions and training young leaders for decades.</p>
+      </div>
+
+      <!-- Vision & Mission Grid -->
+      <div class="vision-mission-grid reveal">
+        <div class="vm-card glass-panel">
+          <div class="vm-header">
+            <div class="vm-icon"><i class="fa-solid fa-eye"></i></div>
+            <h3>Our Vision</h3>
+          </div>
+          <p>To be the global leader in community and humanitarian service. We envision a world where every community has a dedicated team of volunteers working together to restore sight, conserve the ecosystem, combat hunger, and empower youth to lead the future.</p>
+        </div>
+        <div class="vm-card glass-panel">
+          <div class="vm-header">
+            <div class="vm-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <h3>Our Mission</h3>
+          </div>
+          <p>To empower volunteers to serve their communities, meet humanitarian needs, encourage peace and promote international understanding through Lions and Leo Clubs. We provide critical operational frameworks, training, and platforms for sustainable impact.</p>
+        </div>
+      </div>
+
+      <!-- Core Pillars -->
+      <div class="pillars-section reveal">
+        <h3 class="section-title">Our Operational Pillars</h3>
+        <div class="pillars-grid">
+          <div class="pillar-card glass-panel">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h4>Leadership</h4>
+            <p>Cultivating active leadership through structured youth development and cabinet roles.</p>
+          </div>
+          <div class="pillar-card glass-panel">
+            <i class="fa-solid fa-globe"></i>
+            <h4>Global Reach</h4>
+            <p>Deploying localized community relief campaigns that conform to global targets.</p>
+          </div>
+          <div class="pillar-card glass-panel">
+            <i class="fa-solid fa-user-group"></i>
+            <h4>Fellowship</h4>
+            <p>Building lifelong professional and civic connections between Lions and Leos.</p>
+          </div>
+          <div class="pillar-card glass-panel">
+            <i class="fa-solid fa-hands-holding-circle"></i>
+            <h4>Integrity</h4>
+            <p>Maintaining complete transparency and strict audit trails on all service investments.</p>
+          </div>
+        </div>
+      </div>
+          <div class="timeline-line"></div>
+          
+          <div class="timeline-item left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-panel">
+              <span class="timeline-year">2005</span>
+              <h4>District Inauguration</h4>
+              <p>Leo District 306 D1 was formally chartered by Lions Clubs International, starting with 12 charter clubs and 250 members.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-panel">
+              <span class="timeline-year">2012</span>
+              <h4>Youth Leo Expansion</h4>
+              <p>The youth Leo Club wing was created, bringing on board 15 school and community Leo clubs to cultivate junior leadership.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item left">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-panel">
+              <span class="timeline-year">2018</span>
+              <h4>District Eye Clinic Foundation</h4>
+              <p>Purchased and deployed the first dedicated mobile vision screening unit, providing free screening to rural schools.</p>
+            </div>
+          </div>
+          
+          <div class="timeline-item right">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-panel">
+              <span class="timeline-year">2025</span>
+              <h4>Carbon-Zero Milestone</h4>
+              <p>Completed the historic 'Green Canopy' drive, planting and tracking 50,000 trees across regional deforestation zones.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. COUNCIL PAGE -->
+    <section id="council" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">District Leo Council</h2>
+        <p class="subtitle">Uniting passionate youth leaders across the district — one profile at a time.</p>
+      </div>
+
+      <!-- Global Council Search -->
+      <div class="council-search-bar glass-panel reveal">
+        <div class="search-box-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="council-search" placeholder="Search any member by name or position..." oninput="filterAllCouncil()">
+        </div>
+        <div class="council-stats-pill">
+          <i class="fa-solid fa-users"></i>
+          <span id="council-total-count">38</span> Members
+        </div>
+      </div>
+
+      <!-- ── SECTION 1: DISTRICT EXECUTIVE COMMITTEE ── -->
+      <div class="council-section reveal" id="section-exec">
+        <div class="council-section-header">
+          <div class="section-icon-badge exec-badge"><i class="fa-solid fa-crown"></i></div>
+          <div class="section-header-info">
+            <h3>District Executive Committee</h3>
+            <p>The governing body responsible for strategic leadership, financial oversight, and operational direction of the district.</p>
+          </div>
+        </div>
+        <div class="council-tree-container" id="exec-grid"><!-- JS rendered --></div>
+      </div>
+
+      <!-- ── SECTION 2: CHIEF COORDINATORS ── -->
+      <div class="council-section reveal" id="section-chief">
+        <div class="council-section-header">
+          <div class="section-icon-badge chief-badge"><i class="fa-solid fa-star"></i></div>
+          <div class="section-header-info">
+            <h3>Chief Coordinators</h3>
+            <p>Senior coordinators overseeing district-wide operational areas, ensuring seamless execution across all functions.</p>
+          </div>
+        </div>
+        <div class="council-tree-container" id="chief-grid"><!-- JS rendered --></div>
+      </div>
+
+      <!-- ── SECTION 3: REGIONAL & ZONAL DIRECTORS ── -->
+      <div class="council-section reveal" id="section-regional-zonal">
+        <div class="council-section-header">
+          <div class="section-icon-badge dir-badge"><i class="fa-solid fa-map-location-dot"></i></div>
+          <div class="section-header-info">
+            <h3>Regional & Zonal Directors</h3>
+            <p>Geographic leadership hierarchy managing club clusters across Region A and Region B.</p>
+          </div>
+        </div>
+        <div class="regional-zonal-hierarchy-container" id="regional-zonal-grid"><!-- JS rendered --></div>
+      </div>
+
+      <!-- ── SECTION 3.5: COMMITTEE DIRECTORS ── -->
+      <div class="council-section reveal" id="section-committee-directors">
+        <div class="council-section-header">
+          <div class="section-icon-badge dir-badge"><i class="fa-solid fa-people-group"></i></div>
+          <div class="section-header-info">
+            <h3>Committee Directors</h3>
+            <p>Heads of specialized service, sports, talent, and IT infrastructural portfolios.</p>
+          </div>
+        </div>
+        <div class="committee-directors-row" id="committee-directors-grid"><!-- JS rendered --></div>
+      </div>
+
+      <!-- ── SECTION 4: COUNCIL OFFICERS ── -->
+      <div class="council-section reveal" id="section-officers">
+        <div class="council-section-header">
+          <div class="section-icon-badge officer-badge"><i class="fa-solid fa-shield-halved"></i></div>
+          <div class="section-header-info">
+            <h3>Council Officers</h3>
+            <p>Dedicated officers supporting committee functions, ensuring deliverables and accountability across all district programmes.</p>
+          </div>
+        </div>
+        <div class="council-profiles-grid" id="officers-grid"><!-- JS rendered --></div>
+      </div>
+
+    </section>
+
+    <!-- 4. DISTRICT PROJECTS PAGE -->
+    <section id="projects" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">Humanitarian District Projects</h2>
+        <p class="subtitle">Real service yields measurable results. Filter through our district-wide projects and trace funding and deployment statistics.</p>
+      </div>
+
+      <!-- Categories Filter -->
+      <div class="project-filters glass-panel reveal">
+        <button class="btn-project-filter active" onclick="filterProjects('all')">All District Projects</button>
+        <button class="btn-project-filter" onclick="filterProjects('alpha')"><i class="fa-solid fa-rocket text-cyan"></i> Alpha One</button>
+        <button class="btn-project-filter" onclick="filterProjects('genesis')"><i class="fa-solid fa-seedling text-indigo"></i> Genesis One</button>
+        <button class="btn-project-filter" onclick="filterProjects('connect')"><i class="fa-solid fa-network-wired text-green"></i> Connect One</button>
+        <button class="btn-project-filter" onclick="filterProjects('pioneer')"><i class="fa-solid fa-compass text-violet"></i> Pioneer One</button>
+        <button class="btn-project-filter" onclick="filterProjects('legend')"><i class="fa-solid fa-monument text-cyan"></i> Legend One</button>
+        <button class="btn-project-filter" onclick="filterProjects('midyear')"><i class="fa-solid fa-calendar-check text-indigo"></i> Award One - Mid Year Conference</button>
+        <button class="btn-project-filter" onclick="filterProjects('award')"><i class="fa-solid fa-trophy text-gold"></i> Award One</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid reveal" id="projects-grid">
+        <!-- Rendered Dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- 5. LEO CLUBS PAGE -->
+    <section id="leos" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">Leo Clubs Directory</h2>
+        <p class="subtitle">The youth wing of Lions Clubs International. Leos cultivate Leadership, Experience, and Opportunity through local action.</p>
+      </div>
+
+      <!-- Leo Club Presidents -->
+      <div class="leo-council-section reveal">
+        <div class="leo-presidents-header-row">
+          <h3 class="section-title">Leo Club Presidents (2026/2027)</h3>
+        </div>
+        <div class="leo-council-grid" id="public-presidents-grid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Leo Club Directory -->
+      <div class="leo-directory-section reveal" style="margin-top: 60px;">
+        <h3 class="section-title">Leo Clubs Directory</h3>
+        
+        <div class="directory-filter-bar glass-panel">
+          <div class="search-box-wrapper">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="leo-search" placeholder="Search clubs by name, sponsor, region or advisor..." oninput="renderPublicClubs()">
+          </div>
+          <select id="public-clubs-region" onchange="renderPublicClubs()" class="glass-select">
+            <option value="all">All Regions</option>
+            <option value="Region A">Region A</option>
+            <option value="Region B">Region B</option>
+          </select>
+          <div class="clubs-stat"><span id="leo-count">0</span> Clubs Registered</div>
+        </div>
+        
+        <div class="public-clubs-grid" id="public-clubs-grid">
+          <!-- Rendered dynamically as card grid -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. PAST DISTRICT PRESIDENTS -->
+    <section id="presidents" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">Past District Presidents</h2>
+        <p class="subtitle">Honoring the leaders who built our district. Each President brought a unique theme, steering Leo District 306 D1 to greater service achievements.</p>
+      </div>
+
+      <!-- Search Box -->
+      <div class="past-governors-search glass-panel reveal">
+        <div class="search-box-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="gov-search" placeholder="Search Past District Presidents by name, year, theme, or achievement..." oninput="filterGovernors()">
+        </div>
+      </div>
+
+      <!-- Governors Timeline list -->
+      <div class="governors-timeline reveal" id="governors-container">
+        <!-- Rendered Dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- 7. ADMIN PANEL PAGE -->
+    <section id="admin" class="page-view">
+      <div class="admin-dashboard-container glass-panel">
+        
+        <!-- Sidebar Tabs -->
+        <aside class="admin-sidebar">
+          <div class="admin-brand">
+            <i class="fa-solid fa-user-shield text-gold"></i>
+            <span>Admin Center</span>
+          </div>
+          <div class="admin-role-info">
+            <span class="role-badge" id="admin-current-role">Viewer Admin</span>
+            <span class="user-name" id="admin-current-user">User</span>
+          </div>
+          <nav class="admin-nav">
+            <div class="admin-nav-item active" onclick="switchAdminTab('dashboard')" id="tab-nav-dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('council')" id="tab-nav-council"><i class="fa-solid fa-users"></i> Council Officers</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('projects')" id="tab-nav-projects"><i class="fa-solid fa-list-check"></i> District Projects</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('presidents')" id="tab-nav-presidents"><i class="fa-solid fa-user-tie"></i> Club Presidents</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('clubs')" id="tab-nav-clubs"><i class="fa-solid fa-shield-halved"></i> Leo Clubs</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('logs')" id="tab-nav-logs"><i class="fa-solid fa-clipboard-list"></i> Activity Logs</div>
+          </nav>
+          <button class="btn-logout" onclick="handleAdminLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+        </aside>
+
+        <!-- Main Content Board -->
+        <main class="admin-main">
+          
+          <!-- TAB 1: DASHBOARD STATS -->
+          <div class="admin-tab-content active" id="admin-tab-dashboard">
+            <div class="admin-header">
+              <h2>System Dashboard</h2>
+              <p>System overview, audit checks, and quick stats.</p>
+            </div>
+            
+            <div class="admin-stats-grid">
+              <div class="admin-stat-card glass-panel">
+                <h4>Council Officers</h4>
+                <div class="value" id="stat-count-council">0</div>
+                <p>Registered officer records</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>District Projects</h4>
+                <div class="value" id="stat-count-projects">0</div>
+                <p>Ongoing, upcoming & completed</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>Club Presidents</h4>
+                <div class="value" id="stat-count-presidents">0</div>
+                <p>Active local presidents</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>Leo Clubs</h4>
+                <div class="value" id="stat-count-clubs">0</div>
+                <p>Active chartered clubs</p>
+              </div>
+            </div>
+
+            <!-- Recent activities -->
+            <div class="admin-recent-activity glass-panel" style="margin-top: 24px;">
+              <h3>Recent System Logs</h3>
+              <div class="table-container">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Role</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-recent-logs-body">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: COUNCIL OFFICERS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-council">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Council Officers Database</h2>
+                <p>Manage executives, coordinators, directors, and officers.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('council')"><i class="fa-solid fa-plus"></i> Add New Officer</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-council" placeholder="Search officers..." oninput="renderAdminTable('council')">
+              <select id="admin-filter-year-council" onchange="renderAdminTable('council')">
+                <option value="all">All Years</option>
+                <option value="2025/2026">2025/2026</option>
+                <option value="2026/2027">2026/2027</option>
+                <option value="2027/2028">2027/2028</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-council"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: DISTRICT PROJECTS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-projects">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>District Projects Database</h2>
+                <p>Manage upcoming campaigns, target objectives, and reports.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('projects')"><i class="fa-solid fa-plus"></i> Add New Project</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-projects" placeholder="Search projects..." oninput="renderAdminTable('projects')">
+              <select id="admin-filter-status-projects" onchange="renderAdminTable('projects')">
+                <option value="all">All Statuses</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Chairperson</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-projects"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 4: CLUB PRESIDENTS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-presidents">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Leo Club Presidents</h2>
+                <p>Manage active local club presidents and bios.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('presidents')"><i class="fa-solid fa-plus"></i> Add President</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-presidents" placeholder="Search presidents..." oninput="renderAdminTable('presidents')">
+              <select id="admin-filter-year-presidents" onchange="renderAdminTable('presidents')">
+                <option value="all">All Years</option>
+                <option value="2025/2026">2025/2026</option>
+                <option value="2026/2027">2026/2027</option>
+                <option value="2027/2028">2027/2028</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Club</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-presidents"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 5: LEO CLUBS DIRECTORY MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-clubs">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Leo Clubs Directory</h2>
+                <p>Manage chartered clubs, advisor links, and members.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('clubs')"><i class="fa-solid fa-plus"></i> Add New Club</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-clubs" placeholder="Search clubs..." oninput="renderAdminTable('clubs')">
+              <select id="admin-filter-status-clubs" onchange="renderAdminTable('clubs')">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Logo</th>
+                    <th>Club Name</th>
+                    <th>Sponsor Lions</th>
+                    <th>Members</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-clubs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 6: ACTIVITY LOGS -->
+          <div class="admin-tab-content" id="admin-tab-logs">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>System Audit & Activity Logs</h2>
+                <p>Permanent logs of administrative changes and updates.</p>
+              </div>
+              <button class="btn-secondary" onclick="clearActivityLogs()" id="btn-clear-logs"><i class="fa-solid fa-trash-can"></i> Clear Logs</button>
+            </div>
+            
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>User ID</th>
+                    <th>Role</th>
+                    <th>Action Description</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-logs-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </section>
+
+    <!-- 6. PAST DISTRICT PRESIDENTS -->
+    <section id="presidents" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">Past District Presidents</h2>
+        <p class="subtitle">Honoring the leaders who built our district. Each President brought a unique theme, steering Leo District 306 D1 to greater service achievements.</p>
+      </div>
+
+      <!-- Search Box -->
+      <div class="past-governors-search glass-panel reveal">
+        <div class="search-box-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="gov-search" placeholder="Search Past District Presidents by name, year, theme, or achievement..." oninput="filterGovernors()">
+        </div>
+      </div>
+
+      <!-- Governors Timeline list -->
+      <div class="governors-timeline reveal" id="governors-container">
+        <!-- Rendered Dynamically by JS -->
+      </div>
+    </section>
+
+    <!-- 8. LEO NEXUS PORTAL PAGE -->
+    <section id="nexus-portal" class="page-view">
+      <div class="page-header reveal">
+        <h2 class="gradient-text">Leo Nexus Portal</h2>
+        <p class="subtitle">Access the centralized cabinet database, operational registry, and financial audits dashboard.</p>
+      </div>
+
+      <div class="nexus-portal-container reveal">
+        <!-- Info Grid -->
+        <div class="nexus-info-card glass-panel">
+          <div class="brand-row">
+            <i class="fa-solid fa-shield-halved text-gold"></i>
+            <h3>Nexus Portal Command</h3>
+          </div>
+          <p>The Nexus Portal is the official administrative hub for Leo District 306 D1. Log in to manage cabinet operations, record service statistics, download district audits, and communicate across regional zones.</p>
+          
+          <div class="nexus-features-list">
+            <div class="feature-item">
+              <i class="fa-solid fa-check text-gold"></i>
+              <span>Cabinet Directory & Member Grids Management</span>
+            </div>
+            <div class="feature-item">
+              <i class="fa-solid fa-check text-gold"></i>
+              <span>Humanitarian Service Stats Registry</span>
+            </div>
+            <div class="feature-item">
+              <i class="fa-solid fa-check text-gold"></i>
+              <span>Financial Audit Logs and Annual Ledger Releases</span>
+            </div>
+            <div class="feature-item">
+              <i class="fa-solid fa-check text-gold"></i>
+              <span>Leo Clubs Directory & President Profiles Registry</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="nexus-login-card glass-panel">
+          <div class="login-header">
+            <h4>Sign In to Nexus Portal</h4>
+            <p>Enter your credentials to access the central repository.</p>
+          </div>
+          
+          <form onsubmit="handleNexusPortalSubmit(event)">
+            <div class="input-group">
+              <label for="nexus-user">Email / Member ID</label>
+              <input type="text" id="nexus-user" placeholder="e.g. LCI-1002934" required autocomplete="username">
+            </div>
+            <div class="input-group">
+              <label for="nexus-pass">Access Security Key</label>
+              <input type="password" id="nexus-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn-primary btn-full" style="margin-top: 15px;"><i class="fa-solid fa-right-to-bracket"></i> Login to Portal</button>
+          </form>
+          
+          <div class="login-footer" style="margin-top: 20px; font-size: 0.78rem; text-align: center;">
+            <a onclick="window.open('https://leo-nexus-portal.vercel.app/#/login', '_blank')" style="cursor: pointer; color: var(--color-gold);">Open Deployed App <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>LEO DISTRICT 306 D1</h3>
+        <p>A recognized segment of Lions Clubs International, serving the community with compassion, structure, and integrity.</p>
+        <div class="footer-socials">
+          <a class="social-icon" href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a class="social-icon" href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a class="social-icon" href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a class="social-icon" href="#"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-links-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a onclick="navigateTo('home')">Home Page</a></li>
+          <li><a onclick="navigateTo('about')">About Us</a></li>
+          <li><a onclick="navigateTo('dashboard')">District Dashboard</a></li>
+          <li><a onclick="navigateTo('projects')">District Projects</a></li>
+          <li><a onclick="navigateTo('leos')">Leo Clubs Wing</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links-col">
+        <h4>Members</h4>
+        <ul>
+          <li><a onclick="navigateTo('council')">Cabinet Directory</a></li>
+          <li><a onclick="navigateTo('presidents')">Presidents Hall</a></li>
+          <li><a onclick="window.open('https://leo-nexus-portal.vercel.app/#/login', '_blank')">Eagle Portal</a></li>
+          <li><a onclick="togglePortalModal()" style="cursor:pointer;">Local Admin Panel</a></li>
+          <li><a href="#">Resources & Downloads</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-newsletter">
+        <h4>Subscribe to Newsletter</h4>
+        <p>Get latest monthly updates, service reports, and cabinet announcements directly to your inbox.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="Your Email Address" id="footer-newsletter-email">
+          <button onclick="subscribeNewsletterFooter()">Join</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2026 Leo District 306 D1. All Rights Reserved.</p>
+      <p>Powered by Antigravity AI Engine &bull; Designed for visual excellence</p>
+    </div>
+  </footer>
+
+  <!-- PORTAL LOGIN MODAL (Glassmorphic Popup) -->
+  <div class="modal-overlay" id="portal-modal" onclick="closePortalModal(event)">
+    <div class="modal-content glass-panel" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closePortalModal()">&times;</button>
+      <h3 class="gradient-text"><i class="fa-solid fa-lock"></i> Admin Portal Login</h3>
+      <p class="modal-subtitle">Authorized Lions and Leos cabinet administration access.</p>
+      
+      <form onsubmit="handlePortalSubmit(event)">
+        <div class="input-group">
+          <label for="portal-user">Username</label>
+          <input type="text" id="portal-user" placeholder="e.g. superadmin" required autocomplete="username">
+        </div>
+        <div class="input-group">
+          <label for="portal-pass">Password</label>
+          <input type="password" id="portal-pass" placeholder="e.g. admin123" required autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-primary btn-full" style="margin-top: 15px;">Access Portal</button>
+      </form>
+      
+      <div class="modal-footer" style="flex-direction: column; gap: 8px; font-size: 0.72rem; color: #9e8070; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+        <strong>Testing Credentials (User / Pass):</strong>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; text-align: left; width: 100%;">
+          <span>Super Admin: <code>superadmin</code> / <code>admin123</code></span>
+          <span>Content Admin: <code>contentadmin</code> / <code>admin123</code></span>
+          <span>District Admin: <code>districtadmin</code> / <code>admin123</code></span>
+          <span>Viewer Admin: <code>vieweradmin</code> / <code>admin123</code></span>
+        </div>
+        <div style="margin-top: 8px; display: flex; gap: 12px;">
+          <a onclick="window.open('https://leo-nexus-portal.vercel.app/#/login', '_blank')" style="cursor: pointer; color: var(--color-gold);">Open Eagle Portal <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN EDITOR MODAL (Glassmorphic Editor Form) -->
+  <div class="modal-overlay" id="editor-modal" onclick="closeEditorModal(event)">
+    <div class="modal-content glass-panel" onclick="event.stopPropagation()" style="max-width: 680px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" onclick="closeEditorModal()">&times;</button>
+      <h3 class="gradient-text" id="editor-title">Editor Form</h3>
+      <p class="modal-subtitle">Fill in all required fields to sync data.</p>
+      
+      <form id="editor-form" onsubmit="handleEditorSubmit(event)">
+        <!-- Form fields rendered dynamically via JS -->
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
