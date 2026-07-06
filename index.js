@@ -284,7 +284,7 @@ function navigateTo(pageId) {
     if (pageId === 'projects') targetText = 'districtprojects';
     if (pageId === 'presidents') targetText = 'pastdistrictpresidents';
     if (pageId === 'leos') targetText = 'leoclubs';
-    if (pageId === 'nexus-portal') targetText = 'nexusportal';
+    if (pageId === 'nexus-portal') targetText = 'dp-dvpcalendar';
     
     if (linkText === targetText) {
       link.classList.add('active');
@@ -309,7 +309,7 @@ function navigateTo(pageId) {
   } else if (pageId === 'presidents') {
     renderPublicGovernors();
   } else if (pageId === 'nexus-portal') {
-    logActivity(`User viewed Leo Nexus Portal Login Page.`);
+    logActivity(`User viewed DP - DVP Calendar Page.`);
   } else if (pageId === 'admin') {
     // Populate admin tables
     renderAdminDashboard();
