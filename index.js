@@ -1970,8 +1970,8 @@ function createAmbientParticles() {
       p.style.setProperty('--drift', `${drift}px`);
       p.style.left = `${Math.random() * 100}%`;
       p.style.bottom = `${Math.random() * 20}%`;
-      p.style.animationDelay = `${Math.random() * 8}s`;
-      p.style.animationDuration = `${6 + Math.random() * 12}s`;
+      p.style.animationDelay = `${Math.random() * 4}s`;
+      p.style.animationDuration = `${3 + Math.random() * 5}s`;
       
       particleWrapper.appendChild(p);
     }

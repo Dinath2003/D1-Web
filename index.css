@@ -4359,14 +4359,14 @@ footer {
   .cosmic-orbit.orbit-3 { width: 540px; height: 540px; }
 }
 
-/* ── AMBIENT FLAME BACKGROUND ANIMATION ─────────────────── */
+/* ── BLAZING FLAME BACKGROUND ANIMATION ─────────────────── */
 .flame-background {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 500px;
-  background: linear-gradient(to top, rgba(118, 35, 47, 0.08) 0%, transparent 100%);
+  height: 550px;
+  background: linear-gradient(to top, rgba(118, 35, 47, 0.12) 0%, transparent 100%);
   pointer-events: none;
   z-index: -2;
   overflow: hidden;
@@ -4375,11 +4375,11 @@ footer {
 .flame-tongue {
   position: absolute;
   bottom: -150px;
-  width: 350px;
-  height: 500px;
+  width: 380px;
+  height: 550px;
   border-radius: 50% 50% 0 0;
-  background: radial-gradient(ellipse at bottom, rgba(234, 170, 0, 0.16) 0%, rgba(118, 35, 47, 0.06) 50%, transparent 75%);
-  filter: blur(50px);
+  background: radial-gradient(ellipse at bottom, rgba(234, 170, 0, 0.28) 0%, rgba(118, 35, 47, 0.12) 50%, transparent 75%);
+  filter: blur(45px);
   mix-blend-mode: screen;
   transform-origin: bottom center;
   animation: flame-flicker infinite alternate ease-in-out;
@@ -4387,38 +4387,38 @@ footer {
 
 .flame-tongue-1 {
   left: 5%;
-  width: 450px;
-  animation-duration: 7s;
+  width: 480px;
+  animation-duration: 2.4s;
   animation-delay: 0s;
 }
 
 .flame-tongue-2 {
   left: 35%;
-  width: 380px;
-  height: 550px;
-  animation-duration: 9s;
-  animation-delay: -3s;
+  width: 400px;
+  height: 600px;
+  animation-duration: 3.2s;
+  animation-delay: -0.8s;
 }
 
 .flame-tongue-3 {
   left: 65%;
-  width: 480px;
-  animation-duration: 8s;
-  animation-delay: -5s;
+  width: 500px;
+  animation-duration: 2.8s;
+  animation-delay: -1.4s;
 }
 
 @keyframes flame-flicker {
   0% {
-    transform: scale(0.9) skewX(-4deg) translateY(0);
-    opacity: 0.65;
+    transform: scale(0.92) skewX(-7deg) translateY(0);
+    opacity: 0.75;
   }
   50% {
-    transform: scale(1.06) skewX(5deg) translateY(-15px);
-    opacity: 0.85;
+    transform: scale(1.12) skewX(9deg) translateY(-25px);
+    opacity: 0.95;
   }
   100% {
-    transform: scale(0.94) skewX(-3deg) translateY(-8px);
-    opacity: 0.80;
+    transform: scale(0.96) skewX(-4deg) translateY(-12px);
+    opacity: 0.85;
   }
 }
 
