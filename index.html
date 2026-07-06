@@ -62,7 +62,7 @@
       <a class="nav-link" onclick="navigateTo('projects')">District Projects</a>
       <a class="nav-link" onclick="navigateTo('leos')">Leo Clubs</a>
       <a class="nav-link" onclick="navigateTo('presidents')">Past District Presidents</a>
-      <a class="nav-link" onclick="navigateTo('nexus-portal')">Nexus Portal</a>
+      <a class="nav-link" onclick="navigateTo('nexus-portal')">DP - DVP Calendar</a>
       <div class="nav-indicator" id="nav-indicator"></div>
     </nav>
     
@@ -903,65 +903,15 @@
       </div>
     </section>
 
-    <!-- 8. LEO NEXUS PORTAL PAGE -->
+    <!-- 8. DP - DVP CALENDAR PAGE -->
     <section id="nexus-portal" class="page-view">
       <div class="page-header reveal">
-        <h2 class="gradient-text">Leo Nexus Portal</h2>
-        <p class="subtitle">Access the centralized cabinet database, operational registry, and financial audits dashboard.</p>
+        <h2 class="gradient-text">DP - DVP Calendar</h2>
+        <p class="subtitle">Official Leo District 306 D1 leadership event planning calendar and coordination portal.</p>
       </div>
 
-      <div class="nexus-portal-container reveal">
-        <!-- Info Grid -->
-        <div class="nexus-info-card glass-panel">
-          <div class="brand-row">
-            <i class="fa-solid fa-shield-halved text-gold"></i>
-            <h3>Nexus Portal Command</h3>
-          </div>
-          <p>The Nexus Portal is the official administrative hub for Leo District 306 D1. Log in to manage cabinet operations, record service statistics, download district audits, and communicate across regional zones.</p>
-          
-          <div class="nexus-features-list">
-            <div class="feature-item">
-              <i class="fa-solid fa-check text-gold"></i>
-              <span>Cabinet Directory & Member Grids Management</span>
-            </div>
-            <div class="feature-item">
-              <i class="fa-solid fa-check text-gold"></i>
-              <span>Humanitarian Service Stats Registry</span>
-            </div>
-            <div class="feature-item">
-              <i class="fa-solid fa-check text-gold"></i>
-              <span>Financial Audit Logs and Annual Ledger Releases</span>
-            </div>
-            <div class="feature-item">
-              <i class="fa-solid fa-check text-gold"></i>
-              <span>Leo Clubs Directory & President Profiles Registry</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Login Card -->
-        <div class="nexus-login-card glass-panel">
-          <div class="login-header">
-            <h4>Sign In to Nexus Portal</h4>
-            <p>Enter your credentials to access the central repository.</p>
-          </div>
-          
-          <form onsubmit="handleNexusPortalSubmit(event)">
-            <div class="input-group">
-              <label for="nexus-user">Email / Member ID</label>
-              <input type="text" id="nexus-user" placeholder="e.g. LCI-1002934" required autocomplete="username">
-            </div>
-            <div class="input-group">
-              <label for="nexus-pass">Access Security Key</label>
-              <input type="password" id="nexus-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required autocomplete="current-password">
-            </div>
-            <button type="submit" class="btn-primary btn-full" style="margin-top: 15px;"><i class="fa-solid fa-right-to-bracket"></i> Login to Portal</button>
-          </form>
-          
-          <div class="login-footer" style="margin-top: 20px; font-size: 0.78rem; text-align: center;">
-            <a onclick="window.open('https://leo-nexus-portal.vercel.app/#/login', '_blank')" style="cursor: pointer; color: var(--color-gold);">Open Deployed App <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-          </div>
-        </div>
+      <div class="calendar-iframe-wrapper reveal" style="margin-top: 30px; position: relative;">
+        <iframe src="https://leo-calendar-sw2b.vercel.app" style="width: 100%; height: 850px; border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; box-shadow: 0 15px 45px rgba(0,0,0,0.5); background: rgba(20,5,5,0.4);" allowfullscreen loading="lazy"></iframe>
       </div>
     </section>
 

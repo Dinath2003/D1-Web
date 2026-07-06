@@ -4422,3 +4422,10 @@ footer {
   }
 }
 
+/* ── CALENDAR IFRAME RESPONSIVENESS ─────────────────────── */
+@media (max-width: 768px) {
+  .calendar-iframe-wrapper iframe {
+    height: 550px !important;
+  }
+}
+
