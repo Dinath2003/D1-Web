@@ -1218,6 +1218,10 @@ function openEditorModal(section, recordId = null) {
     alert('Access Denied: Your admin role does not permit modifying Clubs.');
     return;
   }
+  if (section === 'governors' && !checkPermission('edit_council')) {
+    alert('Access Denied: Your admin role does not permit modifying Past District Presidents.');
+    return;
+  }
 
   editorActiveSection = section;
   editingRecordId = recordId;
@@ -1228,7 +1232,9 @@ function openEditorModal(section, recordId = null) {
   const form = document.getElementById('editor-form');
   if (!modal || !form) return;
 
-  title.innerText = recordId ? `Edit ${section.toUpperCase()} Record` : `Add New ${section.toUpperCase()} Record`;
+  let displayLabel = section.toUpperCase();
+  if (section === 'governors') displayLabel = 'PAST DISTRICT PRESIDENT';
+  title.innerText = recordId ? `Edit ${displayLabel} Record` : `Add New ${displayLabel} Record`;
   
   let key = '';
   if (section === 'council') key = STORAGE_KEYS.COUNCIL;
