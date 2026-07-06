@@ -8,7 +8,7 @@ const STORAGE_KEYS = {
   PRESIDENTS: 'leo_club_presidents_v4',
   CLUBS: 'leo_clubs_directory_v4',
   LOGS: 'leo_admin_activity_log_v4',
-  GOVERNORS: 'leo_governors_v5'
+  GOVERNORS: 'leo_governors_v6'
 };
 
 // RBAC Configuration mapping permissions
@@ -97,7 +97,12 @@ const SEED_CLUBS = [
   { id: 'cl-3', name: 'Leo Club of Galle Heritage', sponsor: 'Lions Club of Galle', region: 'Region A', members: 35, president: 'Leo Tharindu Perera', secretary: 'Leo Vihanga Senanayake', treasurer: 'Leo Udara Liyanage', advisor: 'Lion S. Rajapaksha', charteredDate: '2018-02-14', email: 'galleleos@gmail.com', phone: '+94 91 123 4567', facebook: '#', instagram: '#', linkedin: '#', desc: 'Committed to rural community development, mobile medical units, and coastal ecology rejuvenation.', status: 'Active', displayOrder: 3, logo: null, banner: null }
 ];
 
-const SEED_GOVERNORS = [];
+const SEED_GOVERNORS = [
+  { id: 'gov-1', name: "Lion Dr. A. Samaranayake", year: "2024/2025", theme: "Serve with Love", logo: "fa-heart", achievement: "Established the District Dialysis Center with 6 high-end hemodialysis machines, serving 120 patients weekly.", status: 'Active', displayOrder: 1, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-2', name: "Lion Mahinda Bandara, PMJF", year: "2023/2024", theme: "Unite to Care", logo: "fa-handshake", achievement: "Constructed 20 water purification/RO systems for rural schools, eliminating kidney disease risks for 6,000+ students.", status: 'Active', displayOrder: 2, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-3', name: "Lion Mrs. Swarna Goonewardene", year: "2022/2023", theme: "Glow in Service", logo: "fa-sun", achievement: "Chartered 8 new Leo clubs, growing the youth database by 35% and donating 1,000 reading glasses.", status: 'Active', displayOrder: 3, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-4', name: "Lion J. Ronald Perera, MJF", year: "2021/2022", theme: "Stronger Together", logo: "fa-dumbbell", achievement: "Dispatched $50,000 in immediate relief supplies to regional centers during the major monsoon floods.", status: 'Active', displayOrder: 4, photo: null, photoScale: 1, photoX: 50, photoY: 50 }
+];
 
 // ── SEEDING & DATABASE MANAGEMENT ──────────────────────────
 
@@ -874,10 +879,16 @@ function renderPublicGovernors() {
       <div class="gov-timeline-badge"><i class="fa-solid fa-scroll"></i></div>
       <div class="gov-card glass-panel">
         <span class="gov-year">${g.year}</span>
-        <div class="gov-header">
+        <div class="gov-header" style="display: flex; gap: 15px; align-items: center; margin-bottom: 12px;">
+          <div class="profile-photo-circle" style="width: 64px; height: 64px; border-radius: 12px; border: 1.5px solid rgba(234,170,0,0.3); overflow: hidden; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+            ${g.photo 
+              ? `<img src="${g.photo}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${g.photoScale || 1}); object-position: ${g.photoX || 50}% ${g.photoY || 50}%;">`
+              : `<div class="profile-icon-fallback" style="width: 100%; height: 100%; font-size: 1.2rem; color: rgba(234,170,0,0.7); display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-user-shield"></i></div>`
+            }
+          </div>
           <div>
-            <h4>${g.name}</h4>
-            <div class="gov-theme"><i class="fa-solid ${g.logo}"></i> Theme: "<strong>${g.theme}</strong>"</div>
+            <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin: 0;">${g.name}</h4>
+            <div class="gov-theme" style="font-size: 0.8rem; color: #9e8070; margin-top: 4px;"><i class="fa-solid ${g.logo || 'fa-scroll'}"></i> Theme: "<strong>${g.theme}</strong>"</div>
           </div>
         </div>
         <p class="gov-achievement"><strong>Key Achievement:</strong> ${g.achievement}</p>
@@ -1091,7 +1102,10 @@ function renderAdminTable(section) {
       `;
     }
     else if (section === 'governors') {
+      const photoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
+      const img = item.photo ? `<img src="${item.photo}" class="thumbnail" ${photoStyle}>` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-user-shield"></i></div>`;
       tr.innerHTML = `
+        <td>${img}</td>
         <td><strong>${item.year}</strong></td>
         <td>${item.name}</td>
         <td>"${item.theme}"</td>
@@ -1596,6 +1610,12 @@ function openEditorModal(section, recordId = null) {
           <input type="text" placeholder="e.g. fa-sun, fa-heart" id="g-logo" value="${data.logo || 'fa-scroll'}" required>
         </div>
       </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Profile Image File</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'photo')">
+        </div>
+      </div>
       <div class="input-group">
         <label>Key Achievement *</label>
         <textarea id="g-achievement" required>${data.achievement || ''}</textarea>
@@ -1611,6 +1631,28 @@ function openEditorModal(section, recordId = null) {
             <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
             <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
           </select>
+        </div>
+      </div>
+
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 90px; height: 90px; border-radius: 16px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
         </div>
       </div>
     `;
@@ -1841,6 +1883,9 @@ function handleEditorSubmit(e) {
     }
   }
   else if (section === 'governors') {
+    const cropZoom = document.getElementById('crop-zoom');
+    const cropX = document.getElementById('crop-x');
+    const cropY = document.getElementById('crop-y');
     const record = {
       id: recordId || `gov-${Date.now()}`,
       name: document.getElementById('g-name').value.trim(),
@@ -1849,8 +1894,20 @@ function handleEditorSubmit(e) {
       logo: document.getElementById('g-logo').value.trim(),
       achievement: document.getElementById('g-achievement').value.trim(),
       displayOrder: parseInt(document.getElementById('g-order').value),
-      status: document.getElementById('g-status').value
+      status: document.getElementById('g-status').value,
+      photoScale: cropZoom ? parseFloat(cropZoom.value) : 1,
+      photoX: cropX ? parseInt(cropX.value) : 50,
+      photoY: cropY ? parseInt(cropY.value) : 50
     };
+
+    if (editorImageCache['photo']) {
+      record.photo = editorImageCache['photo'];
+    } else if (recordId) {
+      const old = records.find(r => r.id === recordId);
+      record.photo = old ? old.photo : null;
+    } else {
+      record.photo = null;
+    }
 
     if (recordId) {
       const idx = records.findIndex(r => r.id === recordId);
