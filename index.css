@@ -4359,3 +4359,66 @@ footer {
   .cosmic-orbit.orbit-3 { width: 540px; height: 540px; }
 }
 
+/* ── AMBIENT FLAME BACKGROUND ANIMATION ─────────────────── */
+.flame-background {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 500px;
+  background: linear-gradient(to top, rgba(118, 35, 47, 0.08) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: -2;
+  overflow: hidden;
+}
+
+.flame-tongue {
+  position: absolute;
+  bottom: -150px;
+  width: 350px;
+  height: 500px;
+  border-radius: 50% 50% 0 0;
+  background: radial-gradient(ellipse at bottom, rgba(234, 170, 0, 0.16) 0%, rgba(118, 35, 47, 0.06) 50%, transparent 75%);
+  filter: blur(50px);
+  mix-blend-mode: screen;
+  transform-origin: bottom center;
+  animation: flame-flicker infinite alternate ease-in-out;
+}
+
+.flame-tongue-1 {
+  left: 5%;
+  width: 450px;
+  animation-duration: 7s;
+  animation-delay: 0s;
+}
+
+.flame-tongue-2 {
+  left: 35%;
+  width: 380px;
+  height: 550px;
+  animation-duration: 9s;
+  animation-delay: -3s;
+}
+
+.flame-tongue-3 {
+  left: 65%;
+  width: 480px;
+  animation-duration: 8s;
+  animation-delay: -5s;
+}
+
+@keyframes flame-flicker {
+  0% {
+    transform: scale(0.9) skewX(-4deg) translateY(0);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1.06) skewX(5deg) translateY(-15px);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(0.94) skewX(-3deg) translateY(-8px);
+    opacity: 0.80;
+  }
+}
+
