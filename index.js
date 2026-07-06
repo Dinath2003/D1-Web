@@ -974,6 +974,7 @@ function renderAdminTable(section) {
   else if (section === 'projects') { key = STORAGE_KEYS.PROJECTS; }
   else if (section === 'presidents') { key = STORAGE_KEYS.PRESIDENTS; }
   else if (section === 'clubs') { key = STORAGE_KEYS.CLUBS; }
+  else if (section === 'governors') { key = STORAGE_KEYS.GOVERNORS; }
 
   list = getCollection(key);
 
