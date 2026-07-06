@@ -600,6 +600,7 @@
             <div class="admin-nav-item" onclick="switchAdminTab('projects')" id="tab-nav-projects"><i class="fa-solid fa-list-check"></i> District Projects</div>
             <div class="admin-nav-item" onclick="switchAdminTab('presidents')" id="tab-nav-presidents"><i class="fa-solid fa-user-tie"></i> Club Presidents</div>
             <div class="admin-nav-item" onclick="switchAdminTab('clubs')" id="tab-nav-clubs"><i class="fa-solid fa-shield-halved"></i> Leo Clubs</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('governors')" id="tab-nav-governors"><i class="fa-solid fa-scroll"></i> Past Presidents</div>
             <div class="admin-nav-item" onclick="switchAdminTab('logs')" id="tab-nav-logs"><i class="fa-solid fa-clipboard-list"></i> Activity Logs</div>
           </nav>
           <button class="btn-logout" onclick="handleAdminLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
@@ -635,6 +636,11 @@
                 <h4>Leo Clubs</h4>
                 <div class="value" id="stat-count-clubs">0</div>
                 <p>Active chartered clubs</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>Past Presidents</h4>
+                <div class="value" id="stat-count-governors">0</div>
+                <p>Past District Presidents</p>
               </div>
             </div>
 
@@ -809,7 +815,44 @@
             </div>
           </div>
 
-          <!-- TAB 6: ACTIVITY LOGS -->
+          <!-- TAB 6: PAST DISTRICT PRESIDENTS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-governors">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Past District Presidents</h2>
+                <p>Manage past leaders, terms, themes, and key achievements.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('governors')"><i class="fa-solid fa-plus"></i> Add Past President</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-governors" placeholder="Search past presidents..." oninput="renderAdminTable('governors')">
+              <select id="admin-filter-status-governors" onchange="renderAdminTable('governors')">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Name</th>
+                    <th>Theme Title</th>
+                    <th>Icon Class</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-governors"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 7: ACTIVITY LOGS -->
           <div class="admin-tab-content" id="admin-tab-logs">
             <div class="admin-header-row">
               <div class="admin-header">

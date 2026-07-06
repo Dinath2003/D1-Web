@@ -7,7 +7,8 @@ const STORAGE_KEYS = {
   PROJECTS: 'leo_district_projects_v4',
   PRESIDENTS: 'leo_club_presidents_v4',
   CLUBS: 'leo_clubs_directory_v4',
-  LOGS: 'leo_admin_activity_log_v4'
+  LOGS: 'leo_admin_activity_log_v4',
+  GOVERNORS: 'leo_governors_v4'
 };
 
 // RBAC Configuration mapping permissions
@@ -97,10 +98,10 @@ const SEED_CLUBS = [
 ];
 
 const SEED_GOVERNORS = [
-  { name: "Lion Dr. A. Samaranayake", year: "2024/2025", theme: "Serve with Love", logo: "fa-heart", achievement: "Established the District Dialysis Center with 6 high-end hemodialysis machines, serving 120 patients weekly." },
-  { name: "Lion Mahinda Bandara, PMJF", year: "2023/2024", theme: "Unite to Care", logo: "fa-handshake", achievement: "Constructed 20 water purification/RO systems for rural schools, eliminating kidney disease risks for 6,000+ students." },
-  { name: "Lion Mrs. Swarna Goonewardene", year: "2022/2023", theme: "Glow in Service", logo: "fa-sun", achievement: "Chartered 8 new Leo clubs, growing the youth database by 35% and donating 1,000 reading glasses." },
-  { name: "Lion J. Ronald Perera, MJF", year: "2021/2022", theme: "Stronger Together", logo: "fa-dumbbell", achievement: "Dispatched $50,000 in immediate relief supplies to regional centers during the major monsoon floods." }
+  { id: 'gov-1', name: "Lion Dr. A. Samaranayake", year: "2024/2025", theme: "Serve with Love", logo: "fa-heart", achievement: "Established the District Dialysis Center with 6 high-end hemodialysis machines, serving 120 patients weekly.", status: 'Active', displayOrder: 1 },
+  { id: 'gov-2', name: "Lion Mahinda Bandara, PMJF", year: "2023/2024", theme: "Unite to Care", logo: "fa-handshake", achievement: "Constructed 20 water purification/RO systems for rural schools, eliminating kidney disease risks for 6,000+ students.", status: 'Active', displayOrder: 2 },
+  { id: 'gov-3', name: "Lion Mrs. Swarna Goonewardene", year: "2022/2023", theme: "Glow in Service", logo: "fa-sun", achievement: "Chartered 8 new Leo clubs, growing the youth database by 35% and donating 1,000 reading glasses.", status: 'Active', displayOrder: 3 },
+  { id: 'gov-4', name: "Lion J. Ronald Perera, MJF", year: "2021/2022", theme: "Stronger Together", logo: "fa-dumbbell", achievement: "Dispatched $50,000 in immediate relief supplies to regional centers during the major monsoon floods.", status: 'Active', displayOrder: 4 }
 ];
 
 // ── SEEDING & DATABASE MANAGEMENT ──────────────────────────
@@ -117,6 +118,9 @@ function initDatabase() {
   }
   if (!localStorage.getItem(STORAGE_KEYS.CLUBS)) {
     localStorage.setItem(STORAGE_KEYS.CLUBS, JSON.stringify(SEED_CLUBS));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.GOVERNORS)) {
+    localStorage.setItem(STORAGE_KEYS.GOVERNORS, JSON.stringify(SEED_GOVERNORS));
   }
   if (!localStorage.getItem(STORAGE_KEYS.LOGS)) {
     const welcomeLog = [{
@@ -850,7 +854,7 @@ function renderPublicGovernors() {
   grid.innerHTML = '';
 
   const q = document.getElementById('gov-search').value.toLowerCase().trim();
-  let list = SEED_GOVERNORS; // Governors list is static archive for history preservation
+  let list = getCollection(STORAGE_KEYS.GOVERNORS).filter(g => g.status === 'Active');
 
   if (q) {
     list = list.filter(g => 
@@ -913,6 +917,7 @@ function renderAdminDashboard() {
   document.getElementById('stat-count-projects').innerText = getCollection(STORAGE_KEYS.PROJECTS).length;
   document.getElementById('stat-count-presidents').innerText = getCollection(STORAGE_KEYS.PRESIDENTS).length;
   document.getElementById('stat-count-clubs').innerText = getCollection(STORAGE_KEYS.CLUBS).length;
+  document.getElementById('stat-count-governors').innerText = getCollection(STORAGE_KEYS.GOVERNORS).length;
 
   // Render recent logs in Dashboard Tab
   const logs = getCollection(STORAGE_KEYS.LOGS).slice(0, 5);
@@ -932,6 +937,7 @@ function renderAdminDashboard() {
   renderAdminTable('projects');
   renderAdminTable('presidents');
   renderAdminTable('clubs');
+  renderAdminTable('governors');
   renderAdminLogsTable();
 }
 
@@ -979,6 +985,8 @@ function renderAdminTable(section) {
       list = list.filter(item => item.title.toLowerCase().includes(searchVal) || item.chairperson.toLowerCase().includes(searchVal));
     } else if (section === 'clubs') {
       list = list.filter(item => item.name.toLowerCase().includes(searchVal) || item.president.toLowerCase().includes(searchVal));
+    } else if (section === 'governors') {
+      list = list.filter(item => item.name.toLowerCase().includes(searchVal) || item.theme.toLowerCase().includes(searchVal) || item.year.toLowerCase().includes(searchVal));
     }
   }
 
@@ -1083,6 +1091,24 @@ function renderAdminTable(section) {
             <button class="btn-action-icon" onclick="swapOrder('clubs', '${item.id}', 1)" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
             <button class="btn-action-icon" onclick="editRecord('clubs', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
             <button class="btn-action-icon btn-delete" onclick="deleteRecord('clubs', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </td>
+      `;
+    }
+    else if (section === 'governors') {
+      tr.innerHTML = `
+        <td><strong>${item.year}</strong></td>
+        <td>${item.name}</td>
+        <td>"${item.theme}"</td>
+        <td><code>${item.logo}</code> <i class="fa-solid ${item.logo} text-gold" style="margin-left: 5px;"></i></td>
+        <td><span class="badge-status ${item.status === 'Active' ? 'published' : 'draft'}">${item.status}</span></td>
+        <td>${item.displayOrder}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-action-icon" onclick="swapOrder('governors', '${item.id}', -1)" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
+            <button class="btn-action-icon" onclick="swapOrder('governors', '${item.id}', 1)" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
+            <button class="btn-action-icon" onclick="editRecord('governors', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-action-icon btn-delete" onclick="deleteRecord('governors', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         </td>
       `;
@@ -1200,6 +1226,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'projects') key = STORAGE_KEYS.PROJECTS;
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
+  if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
 
   const records = getCollection(key);
   const data = recordId ? records.find(r => r.id === recordId) : {};
@@ -1552,6 +1579,47 @@ function openEditorModal(section, recordId = null) {
       </div>
     `;
   }
+  else if (section === 'governors') {
+    html = `
+      <div class="form-row">
+        <div class="input-group">
+          <label>Full Name *</label>
+          <input type="text" id="g-name" value="${data.name || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Year Term *</label>
+          <input type="text" placeholder="e.g. 2024/2025" id="g-year" value="${data.year || ''}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Theme Title *</label>
+          <input type="text" id="g-theme" value="${data.theme || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Theme Icon (FontAwesome class name) *</label>
+          <input type="text" placeholder="e.g. fa-sun, fa-heart" id="g-logo" value="${data.logo || 'fa-scroll'}" required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Key Achievement *</label>
+        <textarea id="g-achievement" required>${data.achievement || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="g-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="g-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
 
   html += `
     <div class="modal-footer-btns">
@@ -1610,6 +1678,7 @@ function handleEditorSubmit(e) {
   if (section === 'projects') key = STORAGE_KEYS.PROJECTS;
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
+  if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
 
   const records = getCollection(key);
 
@@ -1776,6 +1845,27 @@ function handleEditorSubmit(e) {
       logActivity(`Added Club: ${record.name}`);
     }
   }
+  else if (section === 'governors') {
+    const record = {
+      id: recordId || `gov-${Date.now()}`,
+      name: document.getElementById('g-name').value.trim(),
+      year: document.getElementById('g-year').value.trim(),
+      theme: document.getElementById('g-theme').value.trim(),
+      logo: document.getElementById('g-logo').value.trim(),
+      achievement: document.getElementById('g-achievement').value.trim(),
+      displayOrder: parseInt(document.getElementById('g-order').value),
+      status: document.getElementById('g-status').value
+    };
+
+    if (recordId) {
+      const idx = records.findIndex(r => r.id === recordId);
+      records[idx] = record;
+      logActivity(`Updated Past President: ${record.name}`);
+    } else {
+      records.push(record);
+      logActivity(`Added Past President: ${record.name}`);
+    }
+  }
 
   saveCollection(key, records);
   closeEditorModal();
@@ -1804,6 +1894,7 @@ function deleteRecord(section, recordId) {
   if (section === 'projects') key = STORAGE_KEYS.PROJECTS;
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
+  if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
 
   let records = getCollection(key);
   const target = records.find(r => r.id === recordId);
@@ -1827,6 +1918,7 @@ function swapOrder(section, recordId, direction) {
   if (section === 'projects') key = STORAGE_KEYS.PROJECTS;
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
+  if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
 
   const records = getCollection(key);
   records.sort((a,b) => a.displayOrder - b.displayOrder);
