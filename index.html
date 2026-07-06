@@ -978,27 +978,14 @@
       <form onsubmit="handlePortalSubmit(event)">
         <div class="input-group">
           <label for="portal-user">Username</label>
-          <input type="text" id="portal-user" placeholder="e.g. superadmin" required autocomplete="username">
+          <input type="text" id="portal-user" placeholder="Enter Username" required autocomplete="username">
         </div>
         <div class="input-group">
           <label for="portal-pass">Password</label>
-          <input type="password" id="portal-pass" placeholder="e.g. admin123" required autocomplete="current-password">
+          <input type="password" id="portal-pass" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" required autocomplete="current-password">
         </div>
         <button type="submit" class="btn-primary btn-full" style="margin-top: 15px;">Access Portal</button>
       </form>
-      
-      <div class="modal-footer" style="flex-direction: column; gap: 8px; font-size: 0.72rem; color: #9e8070; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
-        <strong>Testing Credentials (User / Pass):</strong>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; text-align: left; width: 100%;">
-          <span>Super Admin: <code>superadmin</code> / <code>admin123</code></span>
-          <span>Content Admin: <code>contentadmin</code> / <code>admin123</code></span>
-          <span>District Admin: <code>districtadmin</code> / <code>admin123</code></span>
-          <span>Viewer Admin: <code>vieweradmin</code> / <code>admin123</code></span>
-        </div>
-        <div style="margin-top: 8px; display: flex; gap: 12px;">
-          <a onclick="window.open('https://leo-nexus-portal.vercel.app/#/login', '_blank')" style="cursor: pointer; color: var(--color-gold);">Open Eagle Portal <i class="fa-solid fa-arrow-up-right-from-square"></i></a>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -1016,6 +1003,6 @@
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="index.js?v=7"></script>
+  <script src="index.js?v=8"></script>
 </body>
 </html>
