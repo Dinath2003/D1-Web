@@ -8,7 +8,7 @@ const STORAGE_KEYS = {
   PRESIDENTS: 'leo_club_presidents_v4',
   CLUBS: 'leo_clubs_directory_v4',
   LOGS: 'leo_admin_activity_log_v4',
-  GOVERNORS: 'leo_governors_v6'
+  GOVERNORS: 'leo_governors_v7'
 };
 
 // RBAC Configuration mapping permissions
@@ -97,12 +97,7 @@ const SEED_CLUBS = [
   { id: 'cl-3', name: 'Leo Club of Galle Heritage', sponsor: 'Lions Club of Galle', region: 'Region A', members: 35, president: 'Leo Tharindu Perera', secretary: 'Leo Vihanga Senanayake', treasurer: 'Leo Udara Liyanage', advisor: 'Lion S. Rajapaksha', charteredDate: '2018-02-14', email: 'galleleos@gmail.com', phone: '+94 91 123 4567', facebook: '#', instagram: '#', linkedin: '#', desc: 'Committed to rural community development, mobile medical units, and coastal ecology rejuvenation.', status: 'Active', displayOrder: 3, logo: null, banner: null }
 ];
 
-const SEED_GOVERNORS = [
-  { id: 'gov-1', name: "Lion Dr. A. Samaranayake", year: "2024/2025", theme: "Serve with Love", logo: "fa-heart", achievement: "Established the District Dialysis Center with 6 high-end hemodialysis machines, serving 120 patients weekly.", status: 'Active', displayOrder: 1, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
-  { id: 'gov-2', name: "Lion Mahinda Bandara, PMJF", year: "2023/2024", theme: "Unite to Care", logo: "fa-handshake", achievement: "Constructed 20 water purification/RO systems for rural schools, eliminating kidney disease risks for 6,000+ students.", status: 'Active', displayOrder: 2, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
-  { id: 'gov-3', name: "Lion Mrs. Swarna Goonewardene", year: "2022/2023", theme: "Glow in Service", logo: "fa-sun", achievement: "Chartered 8 new Leo clubs, growing the youth database by 35% and donating 1,000 reading glasses.", status: 'Active', displayOrder: 3, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
-  { id: 'gov-4', name: "Lion J. Ronald Perera, MJF", year: "2021/2022", theme: "Stronger Together", logo: "fa-dumbbell", achievement: "Dispatched $50,000 in immediate relief supplies to regional centers during the major monsoon floods.", status: 'Active', displayOrder: 4, photo: null, photoScale: 1, photoX: 50, photoY: 50 }
-];
+const SEED_GOVERNORS = [];
 
 // ── SEEDING & DATABASE MANAGEMENT ──────────────────────────
 
