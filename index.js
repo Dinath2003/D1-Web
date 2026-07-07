@@ -9,7 +9,8 @@ const STORAGE_KEYS = {
   CLUBS: 'leo_clubs_directory_v4',
   LOGS: 'leo_admin_activity_log_v4',
   GOVERNORS: 'leo_governors_v8',
-  BLOGS: 'leo_blogs_v1'
+  BLOGS: 'leo_blogs_v1',
+  USERS: 'leo_custom_users_v2'
 };
 
 // RBAC Configuration mapping permissions
@@ -17,7 +18,8 @@ const ADMIN_ROLES = {
   superadmin: { label: 'Super Admin', permissions: { all: true } },
   contentadmin: { label: 'Content Admin', permissions: { edit: true, view_logs: false, delete: false } },
   districtadmin: { label: 'District Admin', permissions: { edit_council: true, edit_projects: true, edit_clubs: true, edit_presidents: false, delete: false, view_logs: false } },
-  vieweradmin: { label: 'Viewer Admin', permissions: { view_only: true } }
+  vieweradmin: { label: 'Viewer Admin', permissions: { view_only: true } },
+  blog_editor: { label: 'Blog Editor', permissions: { edit_projects: true, delete: true } }
 };
 
 const DEFAULT_USERS = {
@@ -185,6 +187,9 @@ function initDatabase() {
   if (!localStorage.getItem(STORAGE_KEYS.BLOGS)) {
     localStorage.setItem(STORAGE_KEYS.BLOGS, JSON.stringify(SEED_BLOGS));
   }
+  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([]));
+  }
   if (!localStorage.getItem(STORAGE_KEYS.LOGS)) {
     const welcomeLog = [{
       timestamp: new Date().toLocaleString(),
@@ -240,14 +245,14 @@ function updateHeaderLoginButton() {
     btn.innerHTML = `<i class="fa-solid fa-gauge-high"></i> Admin Panel`;
     btn.classList.add('admin-active');
   } else {
-    btn.innerHTML = `Portal Login`;
+    btn.innerHTML = `Admin Log In`;
     btn.classList.remove('admin-active');
   }
 }
 
 function handlePortalHeaderClick() {
   if (currentUser) {
-    handleAdminLogout();
+    navigateTo('admin');
   } else {
     navigateTo('login-page');
   }
@@ -271,12 +276,27 @@ function handlePortalSubmit(e) {
   const user = document.getElementById('portal-user').value.trim();
   const pass = document.getElementById('portal-pass').value.trim();
 
+  let matchedRole = null;
   if (DEFAULT_USERS[user] && DEFAULT_USERS[user] === pass) {
-    currentUser = {
+    matchedRole = {
       username: user,
       label: ADMIN_ROLES[user].label,
       role: user
     };
+  } else {
+    const customUsers = getCollection(STORAGE_KEYS.USERS);
+    const matched = customUsers.find(u => u.username === user && u.password === pass);
+    if (matched) {
+      matchedRole = {
+        username: matched.username,
+        label: matched.label || 'Blog Editor',
+        role: matched.role || 'blog_editor'
+      };
+    }
+  }
+
+  if (matchedRole) {
+    currentUser = matchedRole;
     sessionStorage.setItem('active_admin_session', JSON.stringify(currentUser));
     updateHeaderLoginButton();
     closePortalModal();
@@ -1016,6 +1036,16 @@ function renderAdminDashboard() {
     `).join('') || '<tr><td colspan="3">No activities logged yet.</td></tr>';
   }
 
+  const usersTab = document.getElementById('tab-nav-users');
+  if (usersTab) {
+    if (currentUser && currentUser.role === 'superadmin') {
+      usersTab.style.display = 'block';
+      renderAdminTable('users');
+    } else {
+      usersTab.style.display = 'none';
+    }
+  }
+
   // Populate tables
   renderAdminTable('council');
   renderAdminTable('projects');
@@ -1027,6 +1057,12 @@ function renderAdminDashboard() {
 }
 
 function switchAdminTab(tabId) {
+  if (tabId === 'users' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Security Exception: User management is restricted to Super Admin.');
+    switchAdminTab('dashboard');
+    return;
+  }
+
   activeAdminTab = tabId;
   document.querySelectorAll('.admin-nav-item').forEach(item => {
     item.classList.remove('active');
@@ -1060,6 +1096,7 @@ function renderAdminTable(section) {
   else if (section === 'clubs') { key = STORAGE_KEYS.CLUBS; }
   else if (section === 'governors') { key = STORAGE_KEYS.GOVERNORS; }
   else if (section === 'blogs') { key = STORAGE_KEYS.BLOGS; }
+  else if (section === 'users') { key = STORAGE_KEYS.USERS; }
 
   list = getCollection(key);
 
@@ -1076,6 +1113,8 @@ function renderAdminTable(section) {
       list = list.filter(item => item.name.toLowerCase().includes(searchVal) || item.theme.toLowerCase().includes(searchVal) || item.year.toLowerCase().includes(searchVal));
     } else if (section === 'blogs') {
       list = list.filter(item => item.title.toLowerCase().includes(searchVal) || item.author.toLowerCase().includes(searchVal));
+    } else if (section === 'users') {
+      list = list.filter(item => item.username.toLowerCase().includes(searchVal) || (item.label || '').toLowerCase().includes(searchVal));
     }
   }
 
@@ -1225,6 +1264,20 @@ function renderAdminTable(section) {
         </td>
       `;
     }
+    else if (section === 'users') {
+      tr.innerHTML = `
+        <td><strong>${item.username}</strong></td>
+        <td>${item.label || 'Blog Editor'}</td>
+        <td><span class="badge-status active">${item.role || 'blog_editor'}</span></td>
+        <td><code>${item.password}</code></td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-action-icon" onclick="editRecord('users', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-action-icon btn-delete" onclick="deleteRecord('users', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </td>
+      `;
+    }
 
     tbody.appendChild(tr);
   });
@@ -1329,6 +1382,14 @@ function openEditorModal(section, recordId = null) {
     alert('Access Denied: Your admin role does not permit modifying District Blogs.');
     return;
   }
+  if (section !== 'blogs' && currentUser.role === 'blog_editor') {
+    alert('Security Violation: Blog Editors are restricted to managing blog posts.');
+    return;
+  }
+  if (section === 'users' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify user accounts.');
+    return;
+  }
 
   editorActiveSection = section;
   editingRecordId = recordId;
@@ -1342,6 +1403,7 @@ function openEditorModal(section, recordId = null) {
   let displayLabel = section.toUpperCase();
   if (section === 'governors') displayLabel = 'PAST DISTRICT PRESIDENT';
   if (section === 'blogs') displayLabel = 'DISTRICT BLOG';
+  if (section === 'users') displayLabel = 'USER ACCOUNT';
   title.innerText = recordId ? `Edit ${displayLabel} Record` : `Add New ${displayLabel} Record`;
   
   let key = '';
@@ -1351,6 +1413,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
+  if (section === 'users') key = STORAGE_KEYS.USERS;
 
   const records = getCollection(key);
   const data = recordId ? records.find(r => r.id === recordId) : {};
@@ -1835,6 +1898,32 @@ function openEditorModal(section, recordId = null) {
       </div>
     `;
   }
+  else if (section === 'users') {
+    html = `
+      <div class="input-group">
+        <label>Username *</label>
+        <input type="text" id="u-username" value="${data.username || ''}" required placeholder="e.g. janesmith" style="font-size:1.1rem; font-weight:600;" ${recordId ? 'readonly' : ''}>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Password *</label>
+          <input type="text" id="u-password" value="${data.password || ''}" required placeholder="e.g. pass123">
+        </div>
+        <div class="input-group">
+          <label>Full Name / Publisher Label *</label>
+          <input type="text" id="u-label" value="${data.label || ''}" required placeholder="e.g. Leo Jane Smith">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>User Role *</label>
+          <select id="u-role">
+            <option value="blog_editor" ${data.role === 'blog_editor' ? 'selected' : ''}>Blog Publisher (blog_editor)</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
 
   html += `
     <div class="modal-footer-btns">
@@ -1895,6 +1984,7 @@ function handleEditorSubmit(e) {
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
+  if (section === 'users') key = STORAGE_KEYS.USERS;
 
   const records = getCollection(key);
 
@@ -2132,6 +2222,43 @@ function handleEditorSubmit(e) {
       logActivity(`Added blog post: ${record.title}`);
     }
   }
+  else if (section === 'users') {
+    const usernameInput = document.getElementById('u-username').value.trim();
+    const passwordInput = document.getElementById('u-password').value.trim();
+    const labelInput = document.getElementById('u-label').value.trim();
+    const roleInput = document.getElementById('u-role').value;
+
+    const record = {
+      id: recordId || `user-${Date.now()}`,
+      username: usernameInput,
+      password: passwordInput,
+      label: labelInput,
+      role: roleInput
+    };
+
+    // If adding a new user, make sure username is unique (case-insensitive) and not in default admins
+    if (!recordId) {
+      const lower = usernameInput.toLowerCase();
+      if (DEFAULT_USERS[lower]) {
+        alert('Validation Error: This username matches a built-in admin account.');
+        return;
+      }
+      const existing = records.find(u => u.username.toLowerCase() === lower);
+      if (existing) {
+        alert('Validation Error: This username is already registered.');
+        return;
+      }
+    }
+
+    if (recordId) {
+      const idx = records.findIndex(r => r.id === recordId);
+      records[idx] = record;
+      logActivity(`Updated user account: ${record.username}`);
+    } else {
+      records.push(record);
+      logActivity(`Registered new user account: ${record.username}`);
+    }
+  }
 
   saveCollection(key, records);
   closeEditorModal();
@@ -2148,6 +2275,14 @@ function deleteRecord(section, recordId) {
     alert('Security Exception: Viewer Admin has read-only access. Actions blocked.');
     return;
   }
+  if (section !== 'blogs' && currentUser.role === 'blog_editor') {
+    alert('Security Violation: Blog Editors are restricted to managing blog posts.');
+    return;
+  }
+  if (section === 'users' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify user accounts.');
+    return;
+  }
   if (!checkPermission('delete')) {
     alert('Security Exception: Content Admins and District Admins do not possess deletion privileges.');
     return;
@@ -2162,6 +2297,7 @@ function deleteRecord(section, recordId) {
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
+  if (section === 'users') key = STORAGE_KEYS.USERS;
 
   let records = getCollection(key);
   const target = records.find(r => r.id === recordId);
@@ -2177,6 +2313,14 @@ function deleteRecord(section, recordId) {
 function swapOrder(section, recordId, direction) {
   if (currentUser.role === 'vieweradmin') {
     alert('Security Exception: Viewer Admin cannot reorder records.');
+    return;
+  }
+  if (section !== 'blogs' && currentUser.role === 'blog_editor') {
+    alert('Security Violation: Blog Editors are restricted to managing blog posts.');
+    return;
+  }
+  if (section === 'users') {
+    alert('Invalid Action: User accounts cannot be sorted.');
     return;
   }
 
@@ -2532,20 +2676,35 @@ function handleLoginPageSubmit(e) {
   const pass = document.getElementById('login-page-pass').value.trim();
 
   let matchedRole = null;
-  if (user === 'superadmin' && pass === 'admin123') matchedRole = { username: 'superadmin', role: 'superadmin' };
-  else if (user === 'contentadmin' && pass === 'admin123') matchedRole = { username: 'contentadmin', role: 'contentadmin' };
-  else if (user === 'districtadmin' && pass === 'admin123') matchedRole = { username: 'districtadmin', role: 'districtadmin' };
-  else if (user === 'vieweradmin' && pass === 'admin123') matchedRole = { username: 'vieweradmin', role: 'vieweradmin' };
+  if (user === 'superadmin' && pass === 'admin123') matchedRole = { username: 'superadmin', label: 'Super Admin', role: 'superadmin' };
+  else if (user === 'contentadmin' && pass === 'admin123') matchedRole = { username: 'contentadmin', label: 'Content Admin', role: 'contentadmin' };
+  else if (user === 'districtadmin' && pass === 'admin123') matchedRole = { username: 'districtadmin', label: 'District Admin', role: 'districtadmin' };
+  else if (user === 'vieweradmin' && pass === 'admin123') matchedRole = { username: 'vieweradmin', label: 'Viewer Admin', role: 'vieweradmin' };
+  else {
+    const customUsers = getCollection(STORAGE_KEYS.USERS);
+    const matched = customUsers.find(u => u.username === user && u.password === pass);
+    if (matched) {
+      matchedRole = {
+        username: matched.username,
+        label: matched.label || 'Blog Editor',
+        role: matched.role || 'blog_editor'
+      };
+    }
+  }
 
   if (matchedRole) {
     currentUser = matchedRole;
-    sessionStorage.setItem('current_user', JSON.stringify(currentUser));
+    sessionStorage.setItem('active_admin_session', JSON.stringify(currentUser));
     logActivity(`Administrator ${currentUser.username} logged in via Login Page.`);
     
     document.getElementById('login-page-user').value = '';
     document.getElementById('login-page-pass').value = '';
 
-    updatePortalHeaderButton();
+    // Update admin view details
+    document.getElementById('admin-current-role').innerText = currentUser.label;
+    document.getElementById('admin-current-user').innerText = currentUser.username;
+
+    updateHeaderLoginButton();
     alert('Logged in successfully!');
     navigateTo('admin');
   } else {

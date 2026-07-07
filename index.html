@@ -64,11 +64,10 @@
       <a class="nav-link" onclick="navigateTo('presidents')">Past District Presidents</a>
       <a class="nav-link" onclick="navigateTo('nexus-portal')">DP - DVP Calendar</a>
       <a class="nav-link" onclick="navigateTo('blogs')">District Blog</a>
-      <a class="nav-link" onclick="navigateTo('login-page')">Log In</a>
       <div class="nav-indicator" id="nav-indicator"></div>
     </nav>
     
-    <button class="btn-header" id="portal-header-btn" onclick="handlePortalHeaderClick()">Portal Login</button>
+    <button class="btn-header" id="portal-header-btn" onclick="handlePortalHeaderClick()">Admin Log In</button>
     
     <button class="mobile-nav-toggle" id="mobile-toggle" aria-label="Toggle navigation">
       <i class="fa-solid fa-bars"></i>
@@ -604,6 +603,7 @@
             <div class="admin-nav-item" onclick="switchAdminTab('clubs')" id="tab-nav-clubs"><i class="fa-solid fa-shield-halved"></i> Leo Clubs</div>
             <div class="admin-nav-item" onclick="switchAdminTab('governors')" id="tab-nav-governors"><i class="fa-solid fa-scroll"></i> Past District Presidents</div>
             <div class="admin-nav-item" onclick="switchAdminTab('blogs')" id="tab-nav-blogs"><i class="fa-solid fa-blog"></i> District Blogs</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('users')" id="tab-nav-users" style="display: none;"><i class="fa-solid fa-users-gear"></i> User Accounts</div>
             <div class="admin-nav-item" onclick="switchAdminTab('logs')" id="tab-nav-logs"><i class="fa-solid fa-clipboard-list"></i> Activity Logs</div>
           </nav>
           <button class="btn-logout" onclick="handleAdminLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
@@ -894,6 +894,36 @@
                   </tr>
                 </thead>
                 <tbody id="admin-table-blogs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 7.5: USER ACCOUNTS MANAGEMENT (SUPERADMIN ONLY) -->
+          <div class="admin-tab-content" id="admin-tab-users">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>User Accounts Management</h2>
+                <p>Register, update, and manage editor accounts that can publish blogs.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('users')"><i class="fa-solid fa-plus"></i> Add New User</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-users" placeholder="Search users by name or username..." oninput="renderAdminTable('users')">
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Full Name / Label</th>
+                    <th>Role</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-users"></tbody>
               </table>
             </div>
           </div>
