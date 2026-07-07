@@ -8,7 +8,8 @@ const STORAGE_KEYS = {
   PRESIDENTS: 'leo_club_presidents_v4',
   CLUBS: 'leo_clubs_directory_v4',
   LOGS: 'leo_admin_activity_log_v4',
-  GOVERNORS: 'leo_governors_v8'
+  GOVERNORS: 'leo_governors_v8',
+  BLOGS: 'leo_blogs_v1'
 };
 
 // RBAC Configuration mapping permissions
@@ -158,6 +159,11 @@ const SEED_GOVERNORS = [
   { id: 'gov-58', name: "Mr. Dinal Jayamanne", year: "1971/1972", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 58, photo: null, photoScale: 1, photoX: 50, photoY: 50 }
 ];
 
+const SEED_BLOGS = [
+  { id: 'blog-1', title: "Leo District 306 D1 Kicks Off 2026 Service Year", date: "2026-07-01", author: "District Editorial Panel", content: "Our new service year has officially begun with a series of community support projects launched across multiple regions. Over 25 clubs joined hands to coordinate regional health camps and distribute essential supplies to schools in rural zones.", status: 'Active', displayOrder: 1, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'blog-2', title: "Empowering Rural Schools: RO Water Project Reaches Completion", date: "2026-06-18", author: "Public Relations Chair", content: "Through a collaborated district effort, the installation of water purification and reverse osmosis systems in rural schools has successfully crossed 20 operational units, providing clean drinking water to thousands of students.", status: 'Active', displayOrder: 2, photo: null, photoScale: 1, photoX: 50, photoY: 50 }
+];
+
 // ── SEEDING & DATABASE MANAGEMENT ──────────────────────────
 
 function initDatabase() {
@@ -175,6 +181,9 @@ function initDatabase() {
   }
   if (!localStorage.getItem(STORAGE_KEYS.GOVERNORS)) {
     localStorage.setItem(STORAGE_KEYS.GOVERNORS, JSON.stringify(SEED_GOVERNORS));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.BLOGS)) {
+    localStorage.setItem(STORAGE_KEYS.BLOGS, JSON.stringify(SEED_BLOGS));
   }
   if (!localStorage.getItem(STORAGE_KEYS.LOGS)) {
     const welcomeLog = [{
@@ -237,7 +246,11 @@ function updateHeaderLoginButton() {
 }
 
 function handlePortalHeaderClick() {
-  window.open('https://leo-nexus-portal.vercel.app/#/login', '_blank');
+  if (currentUser) {
+    handleAdminLogout();
+  } else {
+    navigateTo('login-page');
+  }
 }
 
 function togglePortalModal() {
@@ -312,7 +325,7 @@ function navigateTo(pageId) {
   // Check if admin tab navigation is requested but not logged in
   if (pageId === 'admin' && !currentUser) {
     alert('Access restricted. Please authenticate first.');
-    togglePortalModal();
+    navigateTo('login-page');
     return;
   }
 
@@ -344,6 +357,8 @@ function navigateTo(pageId) {
     if (pageId === 'presidents') targetText = 'pastdistrictpresidents';
     if (pageId === 'leos') targetText = 'leoclubs';
     if (pageId === 'nexus-portal') targetText = 'dp-dvpcalendar';
+    if (pageId === 'blogs') targetText = 'districtblog';
+    if (pageId === 'login-page') targetText = 'login';
     
     if (linkText === targetText) {
       link.classList.add('active');
@@ -369,6 +384,10 @@ function navigateTo(pageId) {
     renderPublicGovernors();
   } else if (pageId === 'nexus-portal') {
     logActivity(`User viewed DP - DVP Calendar Page.`);
+  } else if (pageId === 'blogs') {
+    renderPublicBlogs();
+  } else if (pageId === 'login-page') {
+    logActivity(`User viewed Login Page.`);
   } else if (pageId === 'admin') {
     // Populate admin tables
     renderAdminDashboard();
@@ -982,6 +1001,7 @@ function renderAdminDashboard() {
   document.getElementById('stat-count-presidents').innerText = getCollection(STORAGE_KEYS.PRESIDENTS).length;
   document.getElementById('stat-count-clubs').innerText = getCollection(STORAGE_KEYS.CLUBS).length;
   document.getElementById('stat-count-governors').innerText = getCollection(STORAGE_KEYS.GOVERNORS).length;
+  document.getElementById('stat-count-blogs').innerText = getCollection(STORAGE_KEYS.BLOGS).length;
 
   // Render recent logs in Dashboard Tab
   const logs = getCollection(STORAGE_KEYS.LOGS).slice(0, 5);
@@ -1002,6 +1022,7 @@ function renderAdminDashboard() {
   renderAdminTable('presidents');
   renderAdminTable('clubs');
   renderAdminTable('governors');
+  renderAdminTable('blogs');
   renderAdminLogsTable();
 }
 
@@ -1038,6 +1059,7 @@ function renderAdminTable(section) {
   else if (section === 'presidents') { key = STORAGE_KEYS.PRESIDENTS; }
   else if (section === 'clubs') { key = STORAGE_KEYS.CLUBS; }
   else if (section === 'governors') { key = STORAGE_KEYS.GOVERNORS; }
+  else if (section === 'blogs') { key = STORAGE_KEYS.BLOGS; }
 
   list = getCollection(key);
 
@@ -1052,6 +1074,8 @@ function renderAdminTable(section) {
       list = list.filter(item => item.name.toLowerCase().includes(searchVal) || item.president.toLowerCase().includes(searchVal));
     } else if (section === 'governors') {
       list = list.filter(item => item.name.toLowerCase().includes(searchVal) || item.theme.toLowerCase().includes(searchVal) || item.year.toLowerCase().includes(searchVal));
+    } else if (section === 'blogs') {
+      list = list.filter(item => item.title.toLowerCase().includes(searchVal) || item.author.toLowerCase().includes(searchVal));
     }
   }
 
@@ -1181,6 +1205,26 @@ function renderAdminTable(section) {
         </td>
       `;
     }
+    else if (section === 'blogs') {
+      const photoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
+      const img = item.photo ? `<img src="${item.photo}" class="thumbnail" ${photoStyle}>` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-blog"></i></div>`;
+      tr.innerHTML = `
+        <td>${img}</td>
+        <td><strong>${item.date}</strong></td>
+        <td>${item.title}</td>
+        <td>${item.author}</td>
+        <td><span class="badge-status ${item.status === 'Active' ? 'published' : 'draft'}">${item.status}</span></td>
+        <td>${item.displayOrder}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-action-icon" onclick="swapOrder('blogs', '${item.id}', -1)" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
+            <button class="btn-action-icon" onclick="swapOrder('blogs', '${item.id}', 1)" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
+            <button class="btn-action-icon" onclick="editRecord('blogs', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-action-icon btn-delete" onclick="deleteRecord('blogs', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </td>
+      `;
+    }
 
     tbody.appendChild(tr);
   });
@@ -1281,6 +1325,10 @@ function openEditorModal(section, recordId = null) {
     alert('Access Denied: Your admin role does not permit modifying Past District Presidents.');
     return;
   }
+  if (section === 'blogs' && !checkPermission('edit_projects')) {
+    alert('Access Denied: Your admin role does not permit modifying District Blogs.');
+    return;
+  }
 
   editorActiveSection = section;
   editingRecordId = recordId;
@@ -1293,6 +1341,7 @@ function openEditorModal(section, recordId = null) {
 
   let displayLabel = section.toUpperCase();
   if (section === 'governors') displayLabel = 'PAST DISTRICT PRESIDENT';
+  if (section === 'blogs') displayLabel = 'DISTRICT BLOG';
   title.innerText = recordId ? `Edit ${displayLabel} Record` : `Add New ${displayLabel} Record`;
   
   let key = '';
@@ -1301,6 +1350,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
+  if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
 
   const records = getCollection(key);
   const data = recordId ? records.find(r => r.id === recordId) : {};
@@ -1722,6 +1772,69 @@ function openEditorModal(section, recordId = null) {
       </div>
     `;
   }
+  else if (section === 'blogs') {
+    html = `
+      <div class="input-group">
+        <label>Blog Title *</label>
+        <input type="text" id="b-title" value="${data.title || ''}" required style="font-size:1.1rem; font-weight:600;">
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Author / Publisher *</label>
+          <input type="text" id="b-author" value="${data.author || 'District Editorial Panel'}" required>
+        </div>
+        <div class="input-group">
+          <label>Publish Date *</label>
+          <input type="date" id="b-date" value="${data.date || new Date().toISOString().split('T')[0]}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Cover Photo File</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'photo')">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Article Content *</label>
+        <textarea id="b-content" required style="height: 180px;">${data.content || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="b-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="b-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 120px; height: 75px; border-radius: 12px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+    `;
+  }
 
   html += `
     <div class="modal-footer-btns">
@@ -1781,6 +1894,7 @@ function handleEditorSubmit(e) {
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
+  if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
 
   const records = getCollection(key);
 
@@ -1983,6 +2097,41 @@ function handleEditorSubmit(e) {
       logActivity(`Added Past President: ${record.name}`);
     }
   }
+  else if (section === 'blogs') {
+    const cropZoom = document.getElementById('crop-zoom');
+    const cropX = document.getElementById('crop-x');
+    const cropY = document.getElementById('crop-y');
+    const record = {
+      id: recordId || `blog-${Date.now()}`,
+      title: document.getElementById('b-title').value.trim(),
+      author: document.getElementById('b-author').value.trim(),
+      date: document.getElementById('b-date').value,
+      content: document.getElementById('b-content').value.trim(),
+      displayOrder: parseInt(document.getElementById('b-order').value),
+      status: document.getElementById('b-status').value,
+      photoScale: cropZoom ? parseFloat(cropZoom.value) : 1,
+      photoX: cropX ? parseInt(cropX.value) : 50,
+      photoY: cropY ? parseInt(cropY.value) : 50
+    };
+
+    if (editorImageCache['photo']) {
+      record.photo = editorImageCache['photo'];
+    } else if (recordId) {
+      const old = records.find(r => r.id === recordId);
+      record.photo = old ? old.photo : null;
+    } else {
+      record.photo = null;
+    }
+
+    if (recordId) {
+      const idx = records.findIndex(r => r.id === recordId);
+      records[idx] = record;
+      logActivity(`Updated blog post: ${record.title}`);
+    } else {
+      records.push(record);
+      logActivity(`Added blog post: ${record.title}`);
+    }
+  }
 
   saveCollection(key, records);
   closeEditorModal();
@@ -2012,6 +2161,7 @@ function deleteRecord(section, recordId) {
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
+  if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
 
   let records = getCollection(key);
   const target = records.find(r => r.id === recordId);
@@ -2036,6 +2186,7 @@ function swapOrder(section, recordId, direction) {
   if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
+  if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
 
   const records = getCollection(key);
   records.sort((a,b) => a.displayOrder - b.displayOrder);
@@ -2261,3 +2412,143 @@ window.addEventListener('DOMContentLoaded', () => {
   runCounters();
   setTimeout(revealElements, 200);
 });
+
+// ── PUBLIC BLOG & LOGIN PAGE FUNCTIONS ─────────────────────
+
+function renderPublicBlogs() {
+  const container = document.getElementById('blogs-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const q = document.getElementById('blog-search').value.toLowerCase().trim();
+  let list = getCollection(STORAGE_KEYS.BLOGS).filter(b => b.status === 'Active');
+
+  // Sort by order ascending
+  list.sort((a,b) => a.displayOrder - b.displayOrder);
+
+  if (q) {
+    list = list.filter(b => 
+      b.title.toLowerCase().includes(q) || 
+      b.author.toLowerCase().includes(q) || 
+      b.content.toLowerCase().includes(q)
+    );
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `<div class="no-results glass-panel" style="grid-column: 1/-1; padding: 40px; text-align: center;"><i class="fa-solid fa-face-frown" style="font-size: 2rem; color: var(--color-gold); margin-bottom: 10px; display: block;"></i> No blog posts matched your search.</div>`;
+    return;
+  }
+
+  list.forEach(blog => {
+    const card = document.createElement('article');
+    card.className = 'blog-card glass-panel reveal';
+    card.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.06);
+      background: rgba(255,255,255,0.01);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    `;
+
+    // Hover styles
+    card.onmouseover = () => {
+      card.style.transform = 'translateY(-5px)';
+      card.style.borderColor = 'rgba(234,170,0,0.3)';
+      card.style.background = 'rgba(255,255,255,0.02)';
+    };
+    card.onmouseout = () => {
+      card.style.transform = 'translateY(0)';
+      card.style.borderColor = 'rgba(255,255,255,0.06)';
+      card.style.background = 'rgba(255,255,255,0.01)';
+    };
+
+    const photoStyle = `style="width: 100%; height: 100%; object-fit: cover; transform: scale(${blog.photoScale || 1}); object-position: ${blog.photoX || 50}% ${blog.photoY || 50}%;"`;
+    const coverImg = blog.photo 
+      ? `<img src="${blog.photo}" ${photoStyle}>`
+      : `<div class="profile-icon-fallback" style="width:100%; height:100%; font-size:2.5rem; display:flex; align-items:center; justify-content:center; color:rgba(234,170,0,0.4);"><i class="fa-solid fa-blog"></i></div>`;
+
+    const cleanPreview = blog.content.substring(0, 140) + (blog.content.length > 140 ? '...' : '');
+
+    card.innerHTML = `
+      <div class="blog-cover-wrapper" style="width: 100%; height: 200px; overflow: hidden; position: relative; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.06);">
+        ${coverImg}
+      </div>
+      <div class="blog-info-content" style="padding: 24px; display: flex; flex-direction: column; flex-grow: 1; gap: 12px;">
+        <div class="blog-meta-row" style="display: flex; justify-content: space-between; font-size: 0.78rem; color: #9e8070;">
+          <span><i class="fa-solid fa-calendar-day" style="margin-right: 5px;"></i> ${blog.date}</span>
+          <span><i class="fa-solid fa-user-pen" style="margin-right: 5px;"></i> ${blog.author}</span>
+        </div>
+        <h3 style="font-family: var(--font-heading); color: #fff; font-size: 1.15rem; line-height: 1.4; margin: 0; font-weight: 600;">${blog.title}</h3>
+        <p style="font-size: 0.86rem; color: #bcaaa4; line-height: 1.6; margin: 0; flex-grow: 1;">${cleanPreview}</p>
+        <button class="btn-primary" onclick="openBlogDetail('${blog.id}')" style="align-self: flex-start; padding: 8px 16px; font-size: 0.8rem; border-radius: 8px; margin-top: 5px; border:none; cursor:pointer;">Read Article <i class="fa-solid fa-arrow-right" style="margin-left: 5px;"></i></button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  revealElements();
+}
+
+function openBlogDetail(blogId) {
+  const blogs = getCollection(STORAGE_KEYS.BLOGS);
+  const blog = blogs.find(b => b.id === blogId);
+  if (!blog) return;
+
+  const modal = document.getElementById('blog-detail-modal');
+  const inner = document.getElementById('blog-detail-content');
+  if (!modal || !inner) return;
+
+  const photoStyle = `style="width: 100%; height: 100%; object-fit: cover; transform: scale(${blog.photoScale || 1}); object-position: ${blog.photoX || 50}% ${blog.photoY || 50}%;"`;
+  const coverImg = blog.photo 
+    ? `<div style="width: 100%; height: 320px; overflow: hidden; border-radius: 16px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.08);"><img src="${blog.photo}" ${photoStyle}></div>`
+    : '';
+
+  inner.innerHTML = `
+    ${coverImg}
+    <div style="display: flex; gap: 15px; font-size: 0.82rem; color: #9e8070; margin-bottom: 12px;">
+      <span><i class="fa-solid fa-calendar-day"></i> Published on <strong>${blog.date}</strong></span>
+      <span>•</span>
+      <span><i class="fa-solid fa-user-pen"></i> By <strong>${blog.author}</strong></span>
+    </div>
+    <h2 class="gradient-text" style="font-family: var(--font-heading); font-size: 1.8rem; margin: 0 0 20px 0; line-height: 1.3;">${blog.title}</h2>
+    <div style="font-size: 0.95rem; color: #d7ccc8; line-height: 1.7; white-space: pre-wrap; margin-top: 15px;">${blog.content}</div>
+  `;
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeBlogDetailModal() {
+  const modal = document.getElementById('blog-detail-modal');
+  if (modal) modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function handleLoginPageSubmit(e) {
+  e.preventDefault();
+  const user = document.getElementById('login-page-user').value.trim();
+  const pass = document.getElementById('login-page-pass').value.trim();
+
+  let matchedRole = null;
+  if (user === 'superadmin' && pass === 'admin123') matchedRole = { username: 'superadmin', role: 'superadmin' };
+  else if (user === 'contentadmin' && pass === 'admin123') matchedRole = { username: 'contentadmin', role: 'contentadmin' };
+  else if (user === 'districtadmin' && pass === 'admin123') matchedRole = { username: 'districtadmin', role: 'districtadmin' };
+  else if (user === 'vieweradmin' && pass === 'admin123') matchedRole = { username: 'vieweradmin', role: 'vieweradmin' };
+
+  if (matchedRole) {
+    currentUser = matchedRole;
+    sessionStorage.setItem('current_user', JSON.stringify(currentUser));
+    logActivity(`Administrator ${currentUser.username} logged in via Login Page.`);
+    
+    document.getElementById('login-page-user').value = '';
+    document.getElementById('login-page-pass').value = '';
+
+    updatePortalHeaderButton();
+    alert('Logged in successfully!');
+    navigateTo('admin');
+  } else {
+    alert('Invalid administrative credentials. Access Denied.');
+  }
+}
