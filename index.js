@@ -271,6 +271,12 @@ function checkActiveSession() {
   if (cached) {
     currentUser = JSON.parse(cached);
     updateHeaderLoginButton();
+
+    // Update admin sidebar info panels
+    const roleBadge = document.getElementById('admin-current-role');
+    const userName = document.getElementById('admin-current-user');
+    if (roleBadge) roleBadge.innerText = currentUser.label;
+    if (userName) userName.innerText = currentUser.username;
   }
 }
 
@@ -354,6 +360,22 @@ function handleAdminLogout() {
   currentUser = null;
   sessionStorage.removeItem('active_admin_session');
   updateHeaderLoginButton();
+
+  // Reset admin sidebar badges and names
+  const roleBadge = document.getElementById('admin-current-role');
+  const userName = document.getElementById('admin-current-user');
+  if (roleBadge) roleBadge.innerText = 'Viewer Admin';
+  if (userName) userName.innerText = 'User';
+
+  // Hide superadmin specific tabs
+  const usersTab = document.getElementById('tab-nav-users');
+  const logosTab = document.getElementById('tab-nav-logos-manage');
+  if (usersTab) usersTab.style.display = 'none';
+  if (logosTab) logosTab.style.display = 'none';
+
+  // Reset active admin tab
+  switchAdminTab('dashboard');
+
   navigateTo('home');
 }
 
