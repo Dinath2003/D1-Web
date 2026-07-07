@@ -10,7 +10,8 @@ const STORAGE_KEYS = {
   LOGS: 'leo_admin_activity_log_v4',
   GOVERNORS: 'leo_governors_v8',
   BLOGS: 'leo_blogs_v1',
-  USERS: 'leo_custom_users_v2'
+  USERS: 'leo_custom_users_v2',
+  LOGOS: 'leo_pdp_logos_v2'
 };
 
 // RBAC Configuration mapping permissions
@@ -189,6 +190,9 @@ function initDatabase() {
   }
   if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
     localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([]));
+  }
+  if (!localStorage.getItem(STORAGE_KEYS.LOGOS)) {
+    localStorage.setItem(STORAGE_KEYS.LOGOS, JSON.stringify([]));
   }
   if (!localStorage.getItem(STORAGE_KEYS.LOGS)) {
     const welcomeLog = [{
@@ -942,6 +946,7 @@ function renderPublicClubs() {
 }
 
 function renderPublicGovernors() {
+  renderPublicLogosMarquee();
   const grid = document.getElementById('governors-container');
   if (!grid) return;
   grid.innerHTML = '';
@@ -1046,6 +1051,16 @@ function renderAdminDashboard() {
     }
   }
 
+  const logosTab = document.getElementById('tab-nav-logos-manage');
+  if (logosTab) {
+    if (currentUser && currentUser.role === 'superadmin') {
+      logosTab.style.display = 'block';
+      renderAdminTable('logos-manage');
+    } else {
+      logosTab.style.display = 'none';
+    }
+  }
+
   // Populate tables
   renderAdminTable('council');
   renderAdminTable('projects');
@@ -1057,8 +1072,8 @@ function renderAdminDashboard() {
 }
 
 function switchAdminTab(tabId) {
-  if (tabId === 'users' && (!currentUser || currentUser.role !== 'superadmin')) {
-    alert('Security Exception: User management is restricted to Super Admin.');
+  if ((tabId === 'users' || tabId === 'logos-manage') && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Security Exception: Access restricted to Super Admin.');
     switchAdminTab('dashboard');
     return;
   }
@@ -1097,6 +1112,7 @@ function renderAdminTable(section) {
   else if (section === 'governors') { key = STORAGE_KEYS.GOVERNORS; }
   else if (section === 'blogs') { key = STORAGE_KEYS.BLOGS; }
   else if (section === 'users') { key = STORAGE_KEYS.USERS; }
+  else if (section === 'logos-manage') { key = STORAGE_KEYS.LOGOS; }
 
   list = getCollection(key);
 
@@ -1115,6 +1131,8 @@ function renderAdminTable(section) {
       list = list.filter(item => item.title.toLowerCase().includes(searchVal) || item.author.toLowerCase().includes(searchVal));
     } else if (section === 'users') {
       list = list.filter(item => item.username.toLowerCase().includes(searchVal) || (item.label || '').toLowerCase().includes(searchVal));
+    } else if (section === 'logos-manage') {
+      list = list.filter(item => item.name.toLowerCase().includes(searchVal));
     }
   }
 
@@ -1390,6 +1408,10 @@ function openEditorModal(section, recordId = null) {
     alert('Access Denied: Only Super Admin can register or modify user accounts.');
     return;
   }
+  if (section === 'logos-manage' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify PDP logos.');
+    return;
+  }
 
   editorActiveSection = section;
   editingRecordId = recordId;
@@ -1404,6 +1426,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'governors') displayLabel = 'PAST DISTRICT PRESIDENT';
   if (section === 'blogs') displayLabel = 'DISTRICT BLOG';
   if (section === 'users') displayLabel = 'USER ACCOUNT';
+  if (section === 'logos-manage') displayLabel = 'PDP LOGO';
   title.innerText = recordId ? `Edit ${displayLabel} Record` : `Add New ${displayLabel} Record`;
   
   let key = '';
@@ -1414,6 +1437,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'users') key = STORAGE_KEYS.USERS;
+  if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
 
   const records = getCollection(key);
   const data = recordId ? records.find(r => r.id === recordId) : {};
@@ -1924,6 +1948,33 @@ function openEditorModal(section, recordId = null) {
       </div>
     `;
   }
+  else if (section === 'logos-manage') {
+    html = `
+      <div class="input-group">
+        <label>Logo Name / Label *</label>
+        <input type="text" id="logo-name" value="${data.name || ''}" required placeholder="e.g. Logo 1995/1996" style="font-size:1.1rem; font-weight:600;">
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Logo Image File *</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'image')" ${recordId ? '' : 'required'}>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="logo-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="logo-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
 
   html += `
     <div class="modal-footer-btns">
@@ -2259,6 +2310,32 @@ function handleEditorSubmit(e) {
       logActivity(`Registered new user account: ${record.username}`);
     }
   }
+  else if (section === 'logos-manage') {
+    const record = {
+      id: recordId || `logo-${Date.now()}`,
+      name: document.getElementById('logo-name').value.trim(),
+      displayOrder: parseInt(document.getElementById('logo-order').value),
+      status: document.getElementById('logo-status').value
+    };
+
+    if (editorImageCache['image']) {
+      record.image = editorImageCache['image'];
+    } else if (recordId) {
+      const old = records.find(r => r.id === recordId);
+      record.image = old ? old.image : null;
+    } else {
+      record.image = null;
+    }
+
+    if (recordId) {
+      const idx = records.findIndex(r => r.id === recordId);
+      records[idx] = record;
+      logActivity(`Updated PDP Logo: ${record.name}`);
+    } else {
+      records.push(record);
+      logActivity(`Added PDP Logo: ${record.name}`);
+    }
+  }
 
   saveCollection(key, records);
   closeEditorModal();
@@ -2283,6 +2360,10 @@ function deleteRecord(section, recordId) {
     alert('Access Denied: Only Super Admin can register or modify user accounts.');
     return;
   }
+  if (section === 'logos-manage' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify PDP logos.');
+    return;
+  }
   if (!checkPermission('delete')) {
     alert('Security Exception: Content Admins and District Admins do not possess deletion privileges.');
     return;
@@ -2298,6 +2379,7 @@ function deleteRecord(section, recordId) {
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'users') key = STORAGE_KEYS.USERS;
+  if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
 
   let records = getCollection(key);
   const target = records.find(r => r.id === recordId);
@@ -2331,6 +2413,7 @@ function swapOrder(section, recordId, direction) {
   if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
+  if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
 
   const records = getCollection(key);
   records.sort((a,b) => a.displayOrder - b.displayOrder);
@@ -2710,4 +2793,37 @@ function handleLoginPageSubmit(e) {
   } else {
     alert('Invalid administrative credentials. Access Denied.');
   }
+}
+
+// ── PDP LOGOS MARQUEE PUBLIC RENDERER ──────────────────────
+
+function renderPublicLogosMarquee() {
+  const track = document.getElementById('pdp-marquee-track');
+  if (!track) return;
+  track.innerHTML = '';
+
+  const list = getCollection(STORAGE_KEYS.LOGOS).filter(l => l.status === 'Active');
+  list.sort((a,b) => a.displayOrder - b.displayOrder);
+
+  if (list.length === 0) {
+    const container = document.querySelector('.pdp-logos-marquee-container');
+    if (container) container.style.display = 'none';
+    return;
+  } else {
+    const container = document.querySelector('.pdp-logos-marquee-container');
+    if (container) container.style.display = 'block';
+  }
+
+  // Double the list so it scrolls seamlessly without breaking
+  const renderList = [...list, ...list];
+
+  renderList.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'marquee-item';
+    div.innerHTML = `
+      <img src="${item.image}" alt="${item.name}">
+      <span>${item.name}</span>
+    `;
+    track.appendChild(div);
+  });
 }

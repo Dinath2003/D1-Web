@@ -4429,3 +4429,48 @@ footer {
   }
 }
 
+/* ── Moving PDP Logos Marquee ── */
+.marquee-track {
+  display: flex;
+  gap: 60px;
+  width: max-content;
+  animation: marquee-scroll 35s linear infinite;
+}
+
+.marquee-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.marquee-item img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(243,193,14,0.15));
+  transition: transform 0.3s ease;
+}
+
+.marquee-item img:hover {
+  transform: scale(1.15) rotate(3deg);
+  filter: drop-shadow(0 6px 14px rgba(243,193,14,0.35));
+}
+
+.marquee-item span {
+  font-size: 0.7rem;
+  color: #9e8070;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
