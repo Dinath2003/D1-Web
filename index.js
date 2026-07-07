@@ -8,7 +8,7 @@ const STORAGE_KEYS = {
   PRESIDENTS: 'leo_club_presidents_v4',
   CLUBS: 'leo_clubs_directory_v4',
   LOGS: 'leo_admin_activity_log_v4',
-  GOVERNORS: 'leo_governors_v7'
+  GOVERNORS: 'leo_governors_v8'
 };
 
 // RBAC Configuration mapping permissions
@@ -97,7 +97,66 @@ const SEED_CLUBS = [
   { id: 'cl-3', name: 'Leo Club of Galle Heritage', sponsor: 'Lions Club of Galle', region: 'Region A', members: 35, president: 'Leo Tharindu Perera', secretary: 'Leo Vihanga Senanayake', treasurer: 'Leo Udara Liyanage', advisor: 'Lion S. Rajapaksha', charteredDate: '2018-02-14', email: 'galleleos@gmail.com', phone: '+94 91 123 4567', facebook: '#', instagram: '#', linkedin: '#', desc: 'Committed to rural community development, mobile medical units, and coastal ecology rejuvenation.', status: 'Active', displayOrder: 3, logo: null, banner: null }
 ];
 
-const SEED_GOVERNORS = [];
+const SEED_GOVERNORS = [
+  { id: 'gov-1', name: "Leo Lion Yashika Rodrigo", year: "2025/2026", theme: "Leo Club of Mount Lavinia Orient Centennial", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 1, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-2', name: "Leo Lion Sajani Wijesuriya", year: "2024/2025", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 2, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-3', name: "Leo Lion Akila Gunarathne", year: "2023/2024", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 3, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-4', name: "Leo Lion Randhir Samarasinghe", year: "2022/2023", theme: "Leo Club of Colombo Millenium", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 4, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-5', name: "Leo Lion Gayanga Uththaravi Diaz", year: "2021/2022", theme: "Leo Club of Unawatuna Diamond Stars", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 5, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-6', name: "Leo Lion Malinda Ganewatta", year: "2020/2021", theme: "Leo Club of Colombo Millenium", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 6, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-7', name: "Leo Ochintha Nadeeshan", year: "2019/2020", theme: "Leo Club of Mount Lavinia Orient Centennial", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 7, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-8', name: "Leo Lion Dilshan Peiris", year: "2018/2019", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 8, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-9', name: "Lion Navodhya Jayasinghe", year: "2017/2018", theme: "Leo Club of University of Colombo Faculty of Science", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 9, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-10', name: "Lion Supun Dahanayake", year: "2016/2017", theme: "Leo Club of Unawatuna Diamond Stars", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 10, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-11', name: "Mr. Darshana Ranasinghe", year: "2015/2016", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 11, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-12', name: "Lion Sumudu Hewage", year: "2014/2015", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 12, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-13', name: "Mr. Anju Supun Panditharathne", year: "2013/2014", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 13, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-14', name: "Mrs. Vichalya Wijesuriya", year: "2012/2013", theme: "Leo Club of Moratuwa Orient", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 14, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-15', name: "Lion Fouzul Nilaufer", year: "2011/2012", theme: "Leo Club of Galle", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 15, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-16', name: "Mr. Dan De Silva", year: "2010/2011", theme: "Leo Club of Aluthgama Benthota", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 16, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-17', name: "Mrs. Shohana Wijesuriya", year: "2009/2010", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 17, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-18', name: "Lion Asitha Pinnaduwa MJF", year: "2008/2009", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 18, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-19', name: "Mr. Ricky Simms", year: "2007/2008", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 19, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-20', name: "Mrs. Dhshanthie Gamalatge", year: "2006/2007", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 20, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-21', name: "Mr. Late Nilanka Fernando", year: "2005/2006", theme: "Leo Club of Moratuwa-Rathmalana", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 21, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-22', name: "Mr. Kanishka Hewage", year: "2004/2005", theme: "Leo Club of Colombo Millenium", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 22, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-23', name: "Mr. Shehan Kumar", year: "2003/2004", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 23, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-24', name: "Lion Shyana Jayalath MJF, PMAF, PFLM", year: "2002/2003", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 24, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-25', name: "Mr. Charaka Perera", year: "2001/2002", theme: "Leo Club of Moratuwa-Rathmalana", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 25, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-26', name: "Lion Shavindra Diaz", year: "2000/2001", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 26, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-27', name: "Mr. Niroshan Silva", year: "1999/2000", theme: "Leo Club of Galkissa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 27, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-28', name: "Mrs. Kulani Wickramarathne", year: "1998/1999", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 28, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-29', name: "Mr. Azeem Azwar", year: "1997/1998", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 29, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-30', name: "Mr. Siraj Jabir", year: "1996/1997", theme: "Leo Club of Dehiwal North", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 30, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-31', name: "Mr. Sheron Fernando", year: "1995/1996", theme: "Leo Club of Moratuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 31, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-32', name: "Mr. Late Kanchana Wijerathne", year: "1994/1995", theme: "Leo Club of Moratuwa-Rathmalana", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 32, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-33', name: "Mrs. Shashikala Sinnathurai", year: "1993/1994", theme: "Leo Club of Kolpitya", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 33, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-34', name: "Mr. Janin Mudannayake", year: "1992/1993", theme: "Leo Club of Milagiriya", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 34, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-35', name: "Mr. Manoj Wickramathunga", year: "1991/1992", theme: "Leo Club of Wellawatta", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 35, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-36', name: "Riza Aziz", year: "1990/1991", theme: "Leo Club of Dehiwal North", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 36, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-37', name: "Mr. Prabath Wellaboda", year: "1990/1991", theme: "Leo Club of Boralesgamuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 37, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-38', name: "Mr. Harith Munasinghe", year: "1989/1990", theme: "Leo Club of Milagiriya", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 38, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-39', name: "Mr. Hemaka De Alwiz", year: "1988/1989", theme: "Leo Club of Mahanama College", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 39, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-40', name: "Mr. Aruna Kumarasinghe", year: "1988/1989", theme: "Leo Club of Boralesgamuwa", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 40, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-41', name: "Mr. Nimal Panditha Koralage", year: "1987/1988", theme: "Leo Club of Nugegoda Mid Town", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 41, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-42', name: "Mr. Hemaka Diaz", year: "1986/1987", theme: "Leo Club of Milagiriya", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 42, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-43', name: "Mr. Imithiaz Ismail", year: "1985/1986", theme: "Leo Club of Wellawatta", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 43, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-44', name: "Mr. Errol Abeyrathne", year: "1984/1985", theme: "Leo Club of Colombo West", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 44, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-45', name: "Mr. Harin Jayasekara", year: "1983/1984", theme: "Leo Club of Maharagama", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 45, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-46', name: "Mr. T.R.Jeganadan", year: "1982/1983", theme: "Leo Club of Maharagama", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 46, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-47', name: "Mr. Dilip Wazirani", year: "1981/1982", theme: "Leo Club of Colombo West", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 47, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-48', name: "Mr. Ruwan Rathnaweera", year: "1980/1981", theme: "Leo Club of Colombo North", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 48, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-49', name: "Mr. Mohan Burhan", year: "1979/1980", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 49, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-50', name: "Mr. Ghazzeli Mohideen", year: "1978/1979", theme: "Leo Club of Colombo West", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 50, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-51', name: "Mr. Arjun Mendis", year: "1978/1979", theme: "Leo Club of Nugegoda", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 51, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-52', name: "PCC Lion Sunil Dharmarathne", year: "1977/1978", theme: "Leo Club of Mattakkuliya", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 52, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-53', name: "Mr. Lalith C.N. Grero", year: "1976/1977", theme: "Leo Club of Colombo South", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 53, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-54', name: "Mr. Trevor Reckerman", year: "1975/1976", theme: "Leo Club of Wattala", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 54, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-55', name: "Mr. Azad Mohideen", year: "1974/1975", theme: "Leo Club of Moratuwa-Rathmalana", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 55, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-56', name: "Mr. T.Skantharajah", year: "1973/1974", theme: "Leo Club of Moratuwa-Rathmalana", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 56, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-57', name: "Mr. Bryan Wijekoon", year: "1972/1973", theme: "Leo Club of Colombo South", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 57, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'gov-58', name: "Mr. Dinal Jayamanne", year: "1971/1972", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 58, photo: null, photoScale: 1, photoX: 50, photoY: 50 }
+];
 
 // ── SEEDING & DATABASE MANAGEMENT ──────────────────────────
 
@@ -870,6 +929,10 @@ function renderPublicGovernors() {
     const side = idx % 2 === 0 ? 'left' : 'right';
     card.className = `gov-timeline-item ${side} reveal`;
     
+    const achievementHtml = g.achievement ? `<p class="gov-achievement"><strong>Key Achievement:</strong> ${g.achievement}</p>` : '';
+    const themeLabel = (g.theme && g.theme.toLowerCase().includes('club')) ? 'Home Club' : 'Theme';
+    const themeHtml = g.theme ? `<div class="gov-theme" style="font-size: 0.8rem; color: #9e8070; margin-top: 4px;"><i class="fa-solid ${g.logo || 'fa-scroll'}"></i> ${themeLabel}: <strong>${g.theme}</strong></div>` : '';
+
     card.innerHTML = `
       <div class="gov-timeline-badge"><i class="fa-solid fa-scroll"></i></div>
       <div class="gov-card glass-panel">
@@ -883,10 +946,10 @@ function renderPublicGovernors() {
           </div>
           <div>
             <h4 style="font-family: var(--font-heading); font-size: 1.1rem; color: #fff; margin: 0;">${g.name}</h4>
-            <div class="gov-theme" style="font-size: 0.8rem; color: #9e8070; margin-top: 4px;"><i class="fa-solid ${g.logo || 'fa-scroll'}"></i> Theme: "<strong>${g.theme}</strong>"</div>
+            ${themeHtml}
           </div>
         </div>
-        <p class="gov-achievement"><strong>Key Achievement:</strong> ${g.achievement}</p>
+        ${achievementHtml}
       </div>
     `;
     grid.appendChild(card);
@@ -1604,7 +1667,7 @@ function openEditorModal(section, recordId = null) {
       </div>
       <div class="form-row">
         <div class="input-group">
-          <label>Theme Title *</label>
+          <label>Theme / Home Club *</label>
           <input type="text" id="g-theme" value="${data.theme || ''}" required>
         </div>
         <div class="input-group">
@@ -1619,8 +1682,8 @@ function openEditorModal(section, recordId = null) {
         </div>
       </div>
       <div class="input-group">
-        <label>Key Achievement *</label>
-        <textarea id="g-achievement" required>${data.achievement || ''}</textarea>
+        <label>Key Achievement (Optional)</label>
+        <textarea id="g-achievement">${data.achievement || ''}</textarea>
       </div>
       <div class="form-row">
         <div class="input-group">
