@@ -1350,6 +1350,23 @@ function renderAdminTable(section) {
         </td>
       `;
     }
+    else if (section === 'logos-manage') {
+      const img = item.image ? `<img src="${item.image}" class="thumbnail" style="object-fit: contain;">` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-image"></i></div>`;
+      tr.innerHTML = `
+        <td>${img}</td>
+        <td><strong>${item.name}</strong></td>
+        <td><span class="badge-status ${item.status === 'Active' ? 'published' : 'draft'}">${item.status}</span></td>
+        <td>${item.displayOrder}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-action-icon" onclick="swapOrder('logos-manage', '${item.id}', -1)" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
+            <button class="btn-action-icon" onclick="swapOrder('logos-manage', '${item.id}', 1)" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
+            <button class="btn-action-icon" onclick="editRecord('logos-manage', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-action-icon btn-delete" onclick="deleteRecord('logos-manage', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+          </div>
+        </td>
+      `;
+    }
 
     tbody.appendChild(tr);
   });
@@ -2090,6 +2107,7 @@ function handleEditorSubmit(e) {
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'users') key = STORAGE_KEYS.USERS;
+  if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
 
   const records = getCollection(key);
 
