@@ -933,9 +933,9 @@ nav {
   color: var(--color-text-muted);
   font-family: var(--font-heading);
   text-decoration: none;
-  font-size: 0.76rem;
-  font-weight: 500;
-  padding: 5px 11px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 7px 14px;
   border-radius: 40px;
   transition: all 0.25s ease;
   cursor: pointer;
