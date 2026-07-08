@@ -135,8 +135,8 @@ const SEED_CLUBS = [
 ];
 
 const SEED_CLUB_LOGOS = [
-  { id: 'cl-logo-1', name: 'Leo Club of Royal Achievers', image: 'royal_achievers_logo.png', displayOrder: 1, status: 'Active', photoScale: 1, photoX: 50, photoY: 50 },
-  { id: 'cl-logo-2', name: 'Leo Club of Sri Sumangala College', image: 'sri_sumangala_logo.jpg', displayOrder: 2, status: 'Active', photoScale: 1, photoX: 50, photoY: 50 }
+  { id: 'cl-logo-1', name: 'Leo Club of Royal Achievers', image: 'royal_achievers_logo.png', displayOrder: 1, status: 'Active', photoScale: 1, photoX: 50, photoY: 50, frameType: 'rectangle' },
+  { id: 'cl-logo-2', name: 'Leo Club of Sri Sumangala College', image: 'sri_sumangala_logo.jpg', displayOrder: 2, status: 'Active', photoScale: 1, photoX: 50, photoY: 50, frameType: 'rectangle' }
 ];
 
 const SEED_GOVERNORS = [
@@ -2064,7 +2064,7 @@ function openEditorModal(section, recordId = null) {
       
       <!-- Image Crop & Positioning Widget -->
       <div id="image-adjust-widget" class="glass-panel" style="display: ${data.image ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
-        <div style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+        <div id="crop-preview-container" style="width: ${data.frameType === 'rectangle' ? '120px' : '75px'}; height: ${data.frameType === 'rectangle' ? '64px' : '75px'}; border-radius: ${data.frameType === 'rectangle' ? '8px' : '50%'}; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4); transition: all 0.2s ease;">
           <img id="crop-preview-img" src="${data.image || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
@@ -2085,6 +2085,13 @@ function openEditorModal(section, recordId = null) {
       </div>
 
       <div class="form-row">
+        <div class="input-group">
+          <label>Frame Type *</label>
+          <select id="logo-frame-type" onchange="updateCropPreviewFrame()">
+            <option value="circle" ${data.frameType !== 'rectangle' ? 'selected' : ''}>Circle Frame</option>
+            <option value="rectangle" ${data.frameType === 'rectangle' ? 'selected' : ''}>Rectangle Frame</option>
+          </select>
+        </div>
         <div class="input-group">
           <label>Display Order *</label>
           <input type="number" id="logo-order" value="${data.displayOrder || records.length + 1}" required>
@@ -2141,6 +2148,22 @@ function updateCropPreview() {
   if (img) {
     img.style.transform = `scale(${zoom})`;
     img.style.objectPosition = `${x}% ${y}%`;
+  }
+}
+
+function updateCropPreviewFrame() {
+  const select = document.getElementById('logo-frame-type');
+  const previewDiv = document.getElementById('crop-preview-container');
+  if (select && previewDiv) {
+    if (select.value === 'rectangle') {
+      previewDiv.style.borderRadius = '8px';
+      previewDiv.style.width = '120px';
+      previewDiv.style.height = '64px';
+    } else {
+      previewDiv.style.borderRadius = '50%';
+      previewDiv.style.width = '75px';
+      previewDiv.style.height = '75px';
+    }
   }
 }
 
@@ -2440,11 +2463,13 @@ function handleEditorSubmit(e) {
     const cropZoom = document.getElementById('crop-zoom');
     const cropX = document.getElementById('crop-x');
     const cropY = document.getElementById('crop-y');
+    const frameTypeVal = document.getElementById('logo-frame-type') ? document.getElementById('logo-frame-type').value : 'circle';
     const record = {
       id: recordId || `logo-${Date.now()}`,
       name: document.getElementById('logo-name').value.trim(),
       displayOrder: parseInt(document.getElementById('logo-order').value),
       status: document.getElementById('logo-status').value,
+      frameType: frameTypeVal,
       photoScale: cropZoom ? parseFloat(cropZoom.value) : 1,
       photoX: cropX ? parseInt(cropX.value) : 50,
       photoY: cropY ? parseInt(cropY.value) : 50
@@ -2959,9 +2984,10 @@ function renderPublicLogosMarquee() {
   renderList.forEach(item => {
     const div = document.createElement('div');
     div.className = 'marquee-item';
+    const frameClass = item.frameType === 'rectangle' ? 'logo-full-frame' : 'logo-circle-frame';
     const logoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
     div.innerHTML = `
-      <div class="logo-circle-frame">
+      <div class="${frameClass}">
         <img src="${item.image}" alt="${item.name}" ${logoStyle}>
       </div>
       <span>${item.name}</span>
@@ -2995,9 +3021,10 @@ function renderPublicClubLogosMarquee() {
   renderList.forEach(item => {
     const div = document.createElement('div');
     div.className = 'marquee-item';
+    const frameClass = item.frameType === 'rectangle' ? 'logo-full-frame' : 'logo-circle-frame';
     const logoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
     div.innerHTML = `
-      <div class="logo-full-frame">
+      <div class="${frameClass}">
         <img src="${item.image}" alt="${item.name}" ${logoStyle}>
       </div>
       <span>${item.name}</span>
