@@ -134,6 +134,11 @@ const SEED_CLUBS = [
   { id: 'cl-19', name: 'Leo Club of Kalutara Balika Vidyalaya', sponsor: 'Lions Club of Kalutara Central', region: 'Region B', members: 26, president: 'Leo Sethmi Sonaya', secretary: 'Leo BC. Perera', treasurer: 'Leo BD. Perera', advisor: 'Lion BE. Perera', charteredDate: '2019-09-09', email: 'kalutarabalikaleos@gmail.com', phone: '+94 77 999 1111', facebook: '#', instagram: '#', linkedin: '#', desc: 'Dedicated to young female leadership, library support, and village wellness camps.', status: 'Active', displayOrder: 19, logo: null, banner: null }
 ];
 
+const SEED_CLUB_LOGOS = [
+  { id: 'cl-logo-1', name: 'Leo Club of Royal Achievers', image: 'royal_achievers_logo.png', displayOrder: 1, status: 'Active', photoScale: 1, photoX: 50, photoY: 50 },
+  { id: 'cl-logo-2', name: 'Leo Club of Sri Sumangala College', image: 'sri_sumangala_logo.jpg', displayOrder: 2, status: 'Active', photoScale: 1, photoX: 50, photoY: 50 }
+];
+
 const SEED_GOVERNORS = [
   { id: 'gov-1', name: "Leo Lion Yashika Rodrigo", year: "2025/2026", theme: "Leo Club of Mount Lavinia Orient Centennial", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 1, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
   { id: 'gov-2', name: "Leo Lion Sajani Wijesuriya", year: "2024/2025", theme: "Leo Club of Colombo Host", logo: "fa-shield-halved", achievement: "", status: 'Active', displayOrder: 2, photo: null, photoScale: 1, photoX: 50, photoY: 50 },
@@ -227,8 +232,8 @@ function initDatabase() {
   if (!localStorage.getItem(STORAGE_KEYS.LOGOS)) {
     localStorage.setItem(STORAGE_KEYS.LOGOS, JSON.stringify([]));
   }
-  if (!localStorage.getItem(STORAGE_KEYS.CLUB_LOGOS)) {
-    localStorage.setItem(STORAGE_KEYS.CLUB_LOGOS, JSON.stringify([]));
+  if (!localStorage.getItem(STORAGE_KEYS.CLUB_LOGOS) || JSON.parse(localStorage.getItem(STORAGE_KEYS.CLUB_LOGOS)).length === 0) {
+    localStorage.setItem(STORAGE_KEYS.CLUB_LOGOS, JSON.stringify(SEED_CLUB_LOGOS));
   }
   if (!localStorage.getItem(STORAGE_KEYS.LOGS)) {
     const welcomeLog = [{
@@ -2992,7 +2997,7 @@ function renderPublicClubLogosMarquee() {
     div.className = 'marquee-item';
     const logoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
     div.innerHTML = `
-      <div class="logo-circle-frame">
+      <div class="logo-full-frame">
         <img src="${item.image}" alt="${item.name}" ${logoStyle}>
       </div>
       <span>${item.name}</span>
