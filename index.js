@@ -11,7 +11,8 @@ const STORAGE_KEYS = {
   GOVERNORS: 'leo_governors_v8',
   BLOGS: 'leo_blogs_v1',
   USERS: 'leo_custom_users_v2',
-  LOGOS: 'leo_pdp_logos_v2'
+  LOGOS: 'leo_pdp_logos_v2',
+  CLUB_LOGOS: 'leo_club_logos_v1'
 };
 
 // RBAC Configuration mapping permissions
@@ -226,6 +227,9 @@ function initDatabase() {
   if (!localStorage.getItem(STORAGE_KEYS.LOGOS)) {
     localStorage.setItem(STORAGE_KEYS.LOGOS, JSON.stringify([]));
   }
+  if (!localStorage.getItem(STORAGE_KEYS.CLUB_LOGOS)) {
+    localStorage.setItem(STORAGE_KEYS.CLUB_LOGOS, JSON.stringify([]));
+  }
   if (!localStorage.getItem(STORAGE_KEYS.LOGS)) {
     const welcomeLog = [{
       timestamp: new Date().toLocaleString(),
@@ -370,8 +374,10 @@ function handleAdminLogout() {
   // Hide superadmin specific tabs
   const usersTab = document.getElementById('tab-nav-users');
   const logosTab = document.getElementById('tab-nav-logos-manage');
+  const clubLogosTab = document.getElementById('tab-nav-club-logos-manage');
   if (usersTab) usersTab.style.display = 'none';
   if (logosTab) logosTab.style.display = 'none';
+  if (clubLogosTab) clubLogosTab.style.display = 'none';
 
   // Reset active admin tab
   switchAdminTab('dashboard');
@@ -451,6 +457,7 @@ function navigateTo(pageId) {
   // Init page-specific dynamic rendering
   if (pageId === 'home') {
     runCounters();
+    renderPublicClubLogosMarquee();
   } else if (pageId === 'council') {
     renderPublicCouncil();
   } else if (pageId === 'projects') {
@@ -1115,6 +1122,16 @@ function renderAdminDashboard() {
     }
   }
 
+  const clubLogosTab = document.getElementById('tab-nav-club-logos-manage');
+  if (clubLogosTab) {
+    if (currentUser && currentUser.role === 'superadmin') {
+      clubLogosTab.style.display = 'block';
+      renderAdminTable('club-logos-manage');
+    } else {
+      clubLogosTab.style.display = 'none';
+    }
+  }
+
   // Populate tables
   renderAdminTable('council');
   renderAdminTable('projects');
@@ -1126,7 +1143,7 @@ function renderAdminDashboard() {
 }
 
 function switchAdminTab(tabId) {
-  if ((tabId === 'users' || tabId === 'logos-manage') && (!currentUser || currentUser.role !== 'superadmin')) {
+  if ((tabId === 'users' || tabId === 'logos-manage' || tabId === 'club-logos-manage') && (!currentUser || currentUser.role !== 'superadmin')) {
     alert('Security Exception: Access restricted to Super Admin.');
     switchAdminTab('dashboard');
     return;
@@ -1167,6 +1184,7 @@ function renderAdminTable(section) {
   else if (section === 'blogs') { key = STORAGE_KEYS.BLOGS; }
   else if (section === 'users') { key = STORAGE_KEYS.USERS; }
   else if (section === 'logos-manage') { key = STORAGE_KEYS.LOGOS; }
+  else if (section === 'club-logos-manage') { key = STORAGE_KEYS.CLUB_LOGOS; }
 
   list = getCollection(key);
 
@@ -1185,7 +1203,7 @@ function renderAdminTable(section) {
       list = list.filter(item => item.title.toLowerCase().includes(searchVal) || item.author.toLowerCase().includes(searchVal));
     } else if (section === 'users') {
       list = list.filter(item => item.username.toLowerCase().includes(searchVal) || (item.label || '').toLowerCase().includes(searchVal));
-    } else if (section === 'logos-manage') {
+    } else if (section === 'logos-manage' || section === 'club-logos-manage') {
       list = list.filter(item => item.name.toLowerCase().includes(searchVal));
     }
   }
@@ -1350,8 +1368,9 @@ function renderAdminTable(section) {
         </td>
       `;
     }
-    else if (section === 'logos-manage') {
-      const img = item.image ? `<img src="${item.image}" class="thumbnail" style="object-fit: contain;">` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-image"></i></div>`;
+    else if (section === 'logos-manage' || section === 'club-logos-manage') {
+      const logoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%; object-fit: cover;"`;
+      const img = item.image ? `<img src="${item.image}" class="thumbnail" ${logoStyle}>` : `<div class="profile-icon-fallback" style="width:36px;height:36px;font-size:0.8rem;margin:0;"><i class="fa-solid fa-image"></i></div>`;
       tr.innerHTML = `
         <td>${img}</td>
         <td><strong>${item.name}</strong></td>
@@ -1359,10 +1378,10 @@ function renderAdminTable(section) {
         <td>${item.displayOrder}</td>
         <td>
           <div class="action-btns">
-            <button class="btn-action-icon" onclick="swapOrder('logos-manage', '${item.id}', -1)" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
-            <button class="btn-action-icon" onclick="swapOrder('logos-manage', '${item.id}', 1)" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
-            <button class="btn-action-icon" onclick="editRecord('logos-manage', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
-            <button class="btn-action-icon btn-delete" onclick="deleteRecord('logos-manage', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
+            <button class="btn-action-icon" onclick="swapOrder('${section}', '${item.id}', -1)" title="Move Up"><i class="fa-solid fa-arrow-up"></i></button>
+            <button class="btn-action-icon" onclick="swapOrder('${section}', '${item.id}', 1)" title="Move Down"><i class="fa-solid fa-arrow-down"></i></button>
+            <button class="btn-action-icon" onclick="editRecord('${section}', '${item.id}')" title="Edit"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-action-icon btn-delete" onclick="deleteRecord('${section}', '${item.id}')" title="Delete"><i class="fa-solid fa-trash-can"></i></button>
           </div>
         </td>
       `;
@@ -1483,6 +1502,10 @@ function openEditorModal(section, recordId = null) {
     alert('Access Denied: Only Super Admin can register or modify PDP logos.');
     return;
   }
+  if (section === 'club-logos-manage' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify Club logos.');
+    return;
+  }
 
   editorActiveSection = section;
   editingRecordId = recordId;
@@ -1498,6 +1521,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'blogs') displayLabel = 'DISTRICT BLOG';
   if (section === 'users') displayLabel = 'USER ACCOUNT';
   if (section === 'logos-manage') displayLabel = 'PDP LOGO';
+  if (section === 'club-logos-manage') displayLabel = 'CLUB LOGO';
   title.innerText = recordId ? `Edit ${displayLabel} Record` : `Add New ${displayLabel} Record`;
   
   let key = '';
@@ -1509,6 +1533,7 @@ function openEditorModal(section, recordId = null) {
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'users') key = STORAGE_KEYS.USERS;
   if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
+  if (section === 'club-logos-manage') key = STORAGE_KEYS.CLUB_LOGOS;
 
   const records = getCollection(key);
   const data = recordId ? records.find(r => r.id === recordId) : {};
@@ -2019,7 +2044,7 @@ function openEditorModal(section, recordId = null) {
       </div>
     `;
   }
-  else if (section === 'logos-manage') {
+  else if (section === 'logos-manage' || section === 'club-logos-manage') {
     html = `
       <div class="input-group">
         <label>Logo Name / Label *</label>
@@ -2131,6 +2156,7 @@ function handleEditorSubmit(e) {
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'users') key = STORAGE_KEYS.USERS;
   if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
+  if (section === 'club-logos-manage') key = STORAGE_KEYS.CLUB_LOGOS;
 
   const records = getCollection(key);
 
@@ -2405,12 +2431,18 @@ function handleEditorSubmit(e) {
       logActivity(`Registered new user account: ${record.username}`);
     }
   }
-  else if (section === 'logos-manage') {
+  else if (section === 'logos-manage' || section === 'club-logos-manage') {
+    const cropZoom = document.getElementById('crop-zoom');
+    const cropX = document.getElementById('crop-x');
+    const cropY = document.getElementById('crop-y');
     const record = {
       id: recordId || `logo-${Date.now()}`,
       name: document.getElementById('logo-name').value.trim(),
       displayOrder: parseInt(document.getElementById('logo-order').value),
-      status: document.getElementById('logo-status').value
+      status: document.getElementById('logo-status').value,
+      photoScale: cropZoom ? parseFloat(cropZoom.value) : 1,
+      photoX: cropX ? parseInt(cropX.value) : 50,
+      photoY: cropY ? parseInt(cropY.value) : 50
     };
 
     if (editorImageCache['image']) {
@@ -2425,10 +2457,10 @@ function handleEditorSubmit(e) {
     if (recordId) {
       const idx = records.findIndex(r => r.id === recordId);
       records[idx] = record;
-      logActivity(`Updated PDP Logo: ${record.name}`);
+      logActivity(`Updated ${section === 'logos-manage' ? 'PDP' : 'Club'} Logo: ${record.name}`);
     } else {
       records.push(record);
-      logActivity(`Added PDP Logo: ${record.name}`);
+      logActivity(`Added ${section === 'logos-manage' ? 'PDP' : 'Club'} Logo: ${record.name}`);
     }
   }
 
@@ -2459,6 +2491,10 @@ function deleteRecord(section, recordId) {
     alert('Access Denied: Only Super Admin can register or modify PDP logos.');
     return;
   }
+  if (section === 'club-logos-manage' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify Club logos.');
+    return;
+  }
   if (!checkPermission('delete')) {
     alert('Security Exception: Content Admins and District Admins do not possess deletion privileges.');
     return;
@@ -2475,6 +2511,7 @@ function deleteRecord(section, recordId) {
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'users') key = STORAGE_KEYS.USERS;
   if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
+  if (section === 'club-logos-manage') key = STORAGE_KEYS.CLUB_LOGOS;
 
   let records = getCollection(key);
   const target = records.find(r => r.id === recordId);
@@ -2509,6 +2546,7 @@ function swapOrder(section, recordId, direction) {
   if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
   if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
   if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
+  if (section === 'club-logos-manage') key = STORAGE_KEYS.CLUB_LOGOS;
 
   const records = getCollection(key);
   records.sort((a,b) => a.displayOrder - b.displayOrder);
@@ -2691,6 +2729,7 @@ window.addEventListener('DOMContentLoaded', () => {
   renderPublicPresidents();
   renderPublicClubs();
   renderPublicGovernors();
+  renderPublicClubLogosMarquee();
 
   // Resize align listeners
   window.addEventListener('resize', () => {
@@ -2906,6 +2945,42 @@ function renderPublicLogosMarquee() {
     return;
   } else {
     const container = document.querySelector('.pdp-logos-marquee-container');
+    if (container) container.style.display = 'block';
+  }
+
+  // Double the list so it scrolls seamlessly without breaking
+  const renderList = [...list, ...list];
+
+  renderList.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'marquee-item';
+    const logoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
+    div.innerHTML = `
+      <div class="logo-circle-frame">
+        <img src="${item.image}" alt="${item.name}" ${logoStyle}>
+      </div>
+      <span>${item.name}</span>
+    `;
+    track.appendChild(div);
+  });
+}
+
+// ── CLUB LOGOS MARQUEE PUBLIC RENDERER ─────────────────────
+
+function renderPublicClubLogosMarquee() {
+  const track = document.getElementById('club-logos-marquee-track');
+  if (!track) return;
+  track.innerHTML = '';
+
+  const list = getCollection(STORAGE_KEYS.CLUB_LOGOS).filter(l => l.status === 'Active');
+  list.sort((a,b) => a.displayOrder - b.displayOrder);
+
+  if (list.length === 0) {
+    const container = document.querySelector('.club-logos-marquee-container');
+    if (container) container.style.display = 'none';
+    return;
+  } else {
+    const container = document.querySelector('.club-logos-marquee-container');
     if (container) container.style.display = 'block';
   }
 

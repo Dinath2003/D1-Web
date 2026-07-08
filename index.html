@@ -248,6 +248,17 @@
 
       </div>
 
+      <!-- Moving Club Logos Marquee Bar -->
+      <div class="club-logos-marquee-container glass-panel reveal" style="margin: 30px auto; max-width: 1200px; overflow: hidden; padding: 20px 0; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; background: rgba(0,0,0,0.25); position: relative;">
+        <!-- Gradient masks on sides for premium look -->
+        <div style="position: absolute; left: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(to right, rgba(7,1,2,1) 0%, rgba(7,1,2,0) 100%); z-index: 2; pointer-events: none;"></div>
+        <div style="position: absolute; right: 0; top: 0; bottom: 0; width: 100px; background: linear-gradient(to left, rgba(7,1,2,1) 0%, rgba(7,1,2,0) 100%); z-index: 2; pointer-events: none;"></div>
+        
+        <div class="marquee-track" id="club-logos-marquee-track">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
       <!-- Feature Grid: Do less administration. Serve more communities. -->
       <div class="agex-features-section">
         <div class="agex-badge-pill">Key Features</div>
@@ -611,6 +622,7 @@
             <div class="admin-nav-item" onclick="switchAdminTab('blogs')" id="tab-nav-blogs"><i class="fa-solid fa-blog"></i> District Blogs</div>
             <div class="admin-nav-item" onclick="switchAdminTab('users')" id="tab-nav-users" style="display: none;"><i class="fa-solid fa-users-gear"></i> User Accounts</div>
             <div class="admin-nav-item" onclick="switchAdminTab('logos-manage')" id="tab-nav-logos-manage" style="display: none;"><i class="fa-solid fa-shapes"></i> PDP Logos</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('club-logos-manage')" id="tab-nav-club-logos-manage" style="display: none;"><i class="fa-solid fa-images"></i> Club Logos</div>
             <div class="admin-nav-item" onclick="switchAdminTab('logs')" id="tab-nav-logs"><i class="fa-solid fa-clipboard-list"></i> Activity Logs</div>
           </nav>
           <button class="btn-logout" onclick="handleAdminLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
@@ -961,6 +973,35 @@
                   </tr>
                 </thead>
                 <tbody id="admin-table-logos-manage"></tbody>
+              </table>
+          </div>
+
+          <!-- TAB 7.7: CLUB LOGOS MANAGEMENT (SUPERADMIN ONLY) -->
+          <div class="admin-tab-content" id="admin-tab-club-logos-manage">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Club Logos Management</h2>
+                <p>Upload and manage logos that appear in the moving club logos bar on the Home page.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('club-logos-manage')"><i class="fa-solid fa-plus"></i> Add New Logo</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-club-logos-manage" placeholder="Search logos by name..." oninput="renderAdminTable('club-logos-manage')">
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Logo</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-club-logos-manage"></tbody>
               </table>
             </div>
           </div>
