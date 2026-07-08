@@ -2031,6 +2031,29 @@ function openEditorModal(section, recordId = null) {
           <input type="file" accept="image/*" onchange="cacheFile(this, 'image')" ${recordId ? '' : 'required'}>
         </div>
       </div>
+      
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.image ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 75px; height: 75px; border-radius: 50%; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.image || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+
       <div class="form-row">
         <div class="input-group">
           <label>Display Order *</label>
@@ -2892,8 +2915,11 @@ function renderPublicLogosMarquee() {
   renderList.forEach(item => {
     const div = document.createElement('div');
     div.className = 'marquee-item';
+    const logoStyle = `style="transform: scale(${item.photoScale || 1}); object-position: ${item.photoX || 50}% ${item.photoY || 50}%;"`;
     div.innerHTML = `
-      <img src="${item.image}" alt="${item.name}">
+      <div class="logo-circle-frame">
+        <img src="${item.image}" alt="${item.name}" ${logoStyle}>
+      </div>
       <span>${item.name}</span>
     `;
     track.appendChild(div);
