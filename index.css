@@ -3685,6 +3685,50 @@ footer {
   padding: 2px;
 }
 
+.table-img-round {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid rgba(243,193,14,0.3);
+  display: block;
+}
+
+.table-img-rect {
+  width: 55px;
+  height: 32px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid rgba(255,255,255,0.08);
+  display: block;
+}
+
+.table-icon-round {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9e8070;
+  font-size: 0.9rem;
+}
+
+.table-icon-rect {
+  width: 55px;
+  height: 32px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9e8070;
+  font-size: 0.8rem;
+}
+
 .admin-table .badge-status {
   padding: 4px 8px;
   border-radius: 8px;
