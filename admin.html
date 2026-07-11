@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Center — Leo District 306 D1</title>
+  <meta name="description" content="Leo District 306 D1 Cabinet Administrative Management Portal.">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="admin-page-body">
+
+  <div class="bg-glow-wrapper">
+    <div class="glow-node-spotlight"></div>
+    <div class="glow-node glow-node-1"></div>
+    <div class="glow-node glow-node-2"></div>
+    <div class="glow-node glow-node-3"></div>
+  </div>
+
+  <!-- ADMIN NAVIGATION HEADER -->
+  <header id="main-header" class="shrink">
+    <a class="logo" href="index.html">
+      <img src="district_logo.jpg" alt="Leo District 306 D1 Logo" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--color-gold); box-shadow: 0 0 10px rgba(243,193,14,0.25);">
+      <span>LEO DISTRICT 306 D1 — ADMIN CENTER</span>
+    </a>
+    
+    <button class="btn-header" id="portal-header-btn" onclick="handleAdminLogout()">Logout</button>
+  </header>
+
+  <!-- MAIN ADMIN CONTENT SECTIONS -->
+  <main style="margin-top: 90px; padding: 0 2%;">
+    <section id="admin" class="page-view active" style="padding:0;">
+      <div class="admin-dashboard-container glass-panel">
+        
+        <!-- Sidebar Tabs -->
+        <aside class="admin-sidebar">
+          <div class="admin-brand">
+            <i class="fa-solid fa-user-shield text-gold"></i>
+            <span>Admin Center</span>
+          </div>
+          <div class="admin-role-info">
+            <span class="role-badge" id="admin-current-role">Viewer Admin</span>
+            <span class="user-name" id="admin-current-user">User</span>
+          </div>
+          <nav class="admin-nav">
+            <div class="admin-nav-item active" onclick="switchAdminTab('dashboard')" id="tab-nav-dashboard"><i class="fa-solid fa-chart-line"></i> Dashboard</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('council')" id="tab-nav-council"><i class="fa-solid fa-users"></i> Council Officers</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('projects')" id="tab-nav-projects"><i class="fa-solid fa-list-check"></i> District Projects</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('presidents')" id="tab-nav-presidents"><i class="fa-solid fa-user-tie"></i> Club Presidents</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('clubs')" id="tab-nav-clubs"><i class="fa-solid fa-shield-halved"></i> Leo Clubs</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('governors')" id="tab-nav-governors"><i class="fa-solid fa-scroll"></i> Past District Presidents</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('blogs')" id="tab-nav-blogs"><i class="fa-solid fa-blog"></i> District Blogs</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('users')" id="tab-nav-users" style="display: none;"><i class="fa-solid fa-users-gear"></i> User Accounts</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('logos-manage')" id="tab-nav-logos-manage" style="display: none;"><i class="fa-solid fa-shapes"></i> PDP Logos</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('club-logos-manage')" id="tab-nav-club-logos-manage" style="display: none;"><i class="fa-solid fa-images"></i> Club Logos</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('supabase')" id="tab-nav-supabase"><i class="fa-solid fa-database"></i> Supabase Settings</div>
+            <div class="admin-nav-item" onclick="switchAdminTab('logs')" id="tab-nav-logs"><i class="fa-solid fa-clipboard-list"></i> Activity Logs</div>
+          </nav>
+          <button class="btn-logout" onclick="handleAdminLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Logout</button>
+        </aside>
+
+        <!-- Main Content Board -->
+        <main class="admin-main">
+          
+          <!-- TAB 1: DASHBOARD STATS -->
+          <div class="admin-tab-content active" id="admin-tab-dashboard">
+            <div class="admin-header">
+              <h2>System Dashboard</h2>
+              <p>System overview, audit checks, and quick stats.</p>
+            </div>
+            
+            <div class="admin-stats-grid">
+              <div class="admin-stat-card glass-panel">
+                <h4>Council Officers</h4>
+                <div class="value" id="stat-count-council">0</div>
+                <p>Registered officer records</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>District Projects</h4>
+                <div class="value" id="stat-count-projects">0</div>
+                <p>Ongoing, upcoming & completed</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>Club Presidents</h4>
+                <div class="value" id="stat-count-presidents">0</div>
+                <p>Active local presidents</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>Leo Clubs</h4>
+                <div class="value" id="stat-count-clubs">0</div>
+                <p>Active chartered clubs</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>Past District Presidents</h4>
+                <div class="value" id="stat-count-governors">0</div>
+                <p>Past District Presidents</p>
+              </div>
+              <div class="admin-stat-card glass-panel">
+                <h4>District Blogs</h4>
+                <div class="value" id="stat-count-blogs">0</div>
+                <p>Published blog articles</p>
+              </div>
+            </div>
+
+            <!-- Recent activities -->
+            <div class="admin-recent-activity glass-panel" style="margin-top: 24px;">
+              <h3>Recent System Logs</h3>
+              <div class="table-container">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Timestamp</th>
+                      <th>Role</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="admin-recent-logs-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: COUNCIL OFFICERS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-council">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Council Officers Database</h2>
+                <p>Manage executives, coordinators, directors, and officers.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('council')"><i class="fa-solid fa-plus"></i> Add New Officer</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-council" placeholder="Search officers..." oninput="renderAdminTable('council')">
+              <select id="admin-filter-year-council" onchange="renderAdminTable('council')">
+                <option value="all">All Years</option>
+                <option value="2025/2026">2025/2026</option>
+                <option value="2026/2027">2026/2027</option>
+                <option value="2027/2028">2027/2028</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-council"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: DISTRICT PROJECTS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-projects">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>District Projects Database</h2>
+                <p>Manage upcoming campaigns, target objectives, and reports.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('projects')"><i class="fa-solid fa-plus"></i> Add New Project</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-projects" placeholder="Search projects..." oninput="renderAdminTable('projects')">
+              <select id="admin-filter-status-projects" onchange="renderAdminTable('projects')">
+                <option value="all">All Statuses</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Chairperson</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-projects"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 4: CLUB PRESIDENTS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-presidents">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Leo Club Presidents</h2>
+                <p>Manage active local club presidents and bios.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('presidents')"><i class="fa-solid fa-plus"></i> Add President</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-presidents" placeholder="Search presidents..." oninput="renderAdminTable('presidents')">
+              <select id="admin-filter-year-presidents" onchange="renderAdminTable('presidents')">
+                <option value="all">All Years</option>
+                <option value="2025/2026">2025/2026</option>
+                <option value="2026/2027">2026/2027</option>
+                <option value="2027/2028">2027/2028</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Club</th>
+                    <th>Year</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-presidents"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 5: LEO CLUBS DIRECTORY MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-clubs">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Leo Clubs Directory</h2>
+                <p>Manage chartered clubs, advisor links, and members.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('clubs')"><i class="fa-solid fa-plus"></i> Add New Club</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-clubs" placeholder="Search clubs..." oninput="renderAdminTable('clubs')">
+              <select id="admin-filter-status-clubs" onchange="renderAdminTable('clubs')">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Logo</th>
+                    <th>Club Name</th>
+                    <th>Sponsoring Lions Club</th>
+                    <th>Members</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-clubs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 6: PAST DISTRICT PRESIDENTS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-governors">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Past District Presidents</h2>
+                <p>Manage past leaders, terms, themes, and key achievements.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('governors')"><i class="fa-solid fa-plus"></i> Add Past President</button>
+            </div>
+
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-governors" placeholder="Search past presidents..." oninput="renderAdminTable('governors')">
+              <select id="admin-filter-status-governors" onchange="renderAdminTable('governors')">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Year</th>
+                    <th>Name</th>
+                    <th>Theme Title</th>
+                    <th>Icon Class</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-governors"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 7: DISTRICT BLOGS MANAGEMENT -->
+          <div class="admin-tab-content" id="admin-tab-blogs">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>District Blogs</h2>
+                <p>Publish service news articles, editorial releases, and district stories.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('blogs')"><i class="fa-solid fa-plus"></i> Add New Blog</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-blogs" placeholder="Search blogs by title or author..." oninput="renderAdminTable('blogs')">
+              <select id="admin-filter-status-blogs" onchange="renderAdminTable('blogs')">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Cover</th>
+                    <th>Date</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-blogs"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 7.5: USER ACCOUNTS MANAGEMENT (SUPERADMIN ONLY) -->
+          <div class="admin-tab-content" id="admin-tab-users">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>User Accounts Management</h2>
+                <p>Register, update, and manage editor accounts that can publish blogs.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('users')"><i class="fa-solid fa-plus"></i> Add New User</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-users" placeholder="Search users by name or username..." oninput="renderAdminTable('users')">
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Full Name / Label</th>
+                    <th>Role</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-users"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 7.6: PDP LOGOS MANAGEMENT (SUPERADMIN ONLY) -->
+          <div class="admin-tab-content" id="admin-tab-logos-manage">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>PDP Logos Management</h2>
+                <p>Upload and manage logos that appear in the moving bar on the Past District Presidents page.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('logos-manage')"><i class="fa-solid fa-plus"></i> Add New Logo</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-logos-manage" placeholder="Search logos by name..." oninput="renderAdminTable('logos-manage')">
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Logo</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-logos-manage"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 7.7: CLUB LOGOS MANAGEMENT (SUPERADMIN ONLY) -->
+          <div class="admin-tab-content" id="admin-tab-club-logos-manage">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>Club Logos Management</h2>
+                <p>Upload and manage logos that appear in the moving club logos bar on the Home page.</p>
+              </div>
+              <button class="btn-primary" onclick="openEditorModal('club-logos-manage')"><i class="fa-solid fa-plus"></i> Add New Logo</button>
+            </div>
+            
+            <div class="admin-filter-bar glass-panel">
+              <input type="text" id="admin-search-club-logos-manage" placeholder="Search logos by name..." oninput="renderAdminTable('club-logos-manage')">
+            </div>
+
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Logo</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Order</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-club-logos-manage"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 9: SUPABASE CONNECTION CONFIG -->
+          <div class="admin-tab-content" id="admin-tab-supabase">
+            <!-- Dynamically populated via JS -->
+          </div>
+
+          <!-- TAB 8: ACTIVITY LOGS -->
+          <div class="admin-tab-content" id="admin-tab-logs">
+            <div class="admin-header-row">
+              <div class="admin-header">
+                <h2>System Audit & Activity Logs</h2>
+                <p>Permanent logs of administrative changes and updates.</p>
+              </div>
+              <button class="btn-secondary" onclick="clearActivityLogs()" id="btn-clear-logs"><i class="fa-solid fa-trash-can"></i> Clear Logs</button>
+            </div>
+            
+            <div class="table-container glass-panel">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>User ID</th>
+                    <th>Role</th>
+                    <th>Action Description</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-table-logs-body"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </section>
+  </main>
+
+  <!-- ADMIN EDITOR MODAL (Glassmorphic Editor Form) -->
+  <div class="modal-overlay" id="editor-modal" onclick="closeEditorModal(event)">
+    <div class="modal-content glass-panel" onclick="event.stopPropagation()" style="max-width: 680px; max-height: 90vh; overflow-y: auto;">
+      <button class="modal-close" onclick="closeEditorModal()">&times;</button>
+      <h3 class="gradient-text" id="editor-title">Editor Form</h3>
+      <p class="modal-subtitle">Fill in all required fields to sync data.</p>
+      
+      <form id="editor-form" onsubmit="handleEditorSubmit(event)">
+        <!-- Form fields rendered dynamically via JS -->
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="seeds.js"></script>
+  <script src="supabase-db.js"></script>
+  <script src="auth.js"></script>
+  <script src="common.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

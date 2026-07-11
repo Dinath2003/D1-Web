@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Leo District 306 D1</title>
+  <meta name="description" content="Authorized administrator login portal for Leo District 306 D1 cabinet files.">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <div class="bg-glow-wrapper">
+    <div class="glow-node-spotlight"></div>
+    
+    <!-- Cosmic Background System -->
+    <div class="cosmic-solar-system">
+      <div class="cosmic-galaxy-core"></div>
+      <div class="cosmic-orbit orbit-1">
+        <div class="cosmic-planet planet-gold"></div>
+      </div>
+      <div class="cosmic-orbit orbit-2">
+        <div class="cosmic-planet planet-crimson"></div>
+      </div>
+      <div class="cosmic-orbit orbit-3">
+        <div class="cosmic-planet planet-bronze">
+          <div class="cosmic-moon"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="glow-node glow-node-1"></div>
+    <div class="glow-node glow-node-2"></div>
+    <div class="glow-node glow-node-3"></div>
+
+    <!-- Themed Flame Background Animation -->
+    <div class="flame-background">
+      <div class="flame-tongue flame-tongue-1"></div>
+      <div class="flame-tongue flame-tongue-2"></div>
+      <div class="flame-tongue flame-tongue-3"></div>
+    </div>
+  </div>
+
+  <!-- FIXED NAVIGATION HEADER -->
+  <header id="main-header">
+    <a class="logo" href="index.html">
+      <img src="district_logo.jpg" alt="Leo District 306 D1 Logo" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--color-gold); box-shadow: 0 0 10px rgba(243,193,14,0.25);">
+      <span>LEO DISTRICT 306 D1</span>
+    </a>
+    
+    <nav id="nav-menu">
+      <a class="nav-link" href="index.html">Home</a>
+      <a class="nav-link" href="about.html">About Us</a>
+      <a class="nav-link" href="council.html">Council</a>
+      <a class="nav-link" href="projects.html">District Projects</a>
+      <a class="nav-link" href="leos.html">Leo Clubs</a>
+      <a class="nav-link" href="presidents.html">Past District Presidents</a>
+      <a class="nav-link" href="nexus-portal.html">DP - DVP Calendar</a>
+      <a class="nav-link" href="blogs.html">District Blog</a>
+      <div class="nav-indicator" id="nav-indicator"></div>
+    </nav>
+    
+    <button class="btn-header" id="portal-header-btn">Admin Log In</button>
+    
+    <button class="mobile-nav-toggle" id="mobile-toggle" aria-label="Toggle navigation">
+      <i class="fa-solid fa-bars"></i>
+    </button>
+  </header>
+
+  <!-- MAIN CONTENT SECTION -->
+  <main style="margin-top: 100px;">
+    <section id="login-page" class="page-view active" style="min-height: 70vh; display: flex; align-items: center; justify-content: center;">
+      <div class="login-page-card glass-panel reveal" style="max-width: 420px; width: 100%; padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 15px 45px rgba(0,0,0,0.5); background: rgba(10,3,3,0.3); backdrop-filter: blur(16px); margin: 40px auto;">
+        <div class="login-card-header" style="text-align: center; margin-bottom: 30px;">
+          <div style="width: 64px; height: 64px; border-radius: 20px; background: rgba(234,170,0,0.1); border: 1.5px solid var(--color-gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.6rem; color: var(--color-gold);">
+            <i class="fa-solid fa-lock"></i>
+          </div>
+          <h3 class="gradient-text" style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 8px;">Admin Login</h3>
+          <p style="font-size: 0.85rem; color: #9e8070; line-height: 1.4;">Access local district cabinet administration tools.</p>
+        </div>
+        
+        <form onsubmit="handleLoginPageSubmit(event)">
+          <div class="input-group" style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 0.78rem; color: #9e8070; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Username</label>
+            <input type="text" id="login-page-user" placeholder="Enter Username" required autocomplete="username" style="width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-size: 0.9rem; outline: none;">
+          </div>
+          <div class="input-group" style="margin-bottom: 25px;">
+            <label style="display: block; font-size: 0.78rem; color: #9e8070; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Password</label>
+            <input type="password" id="login-page-pass" placeholder="••••••••" required autocomplete="current-password" style="width: 100%; padding: 12px 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; font-size: 0.9rem; outline: none;">
+          </div>
+          <button type="submit" class="btn-primary btn-full" style="width: 100%; padding: 14px; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; font-size: 0.95rem; border: none; cursor: pointer;"><i class="fa-solid fa-right-to-bracket"></i> Login to Portal</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>LEO DISTRICT 306 D1</h3>
+        <p>A recognized segment of Lions Clubs International, serving the community with compassion, structure, and integrity.</p>
+        <div class="footer-socials">
+          <a class="social-icon" href="#"><i class="fa-brands fa-facebook-f"></i></a>
+          <a class="social-icon" href="#"><i class="fa-brands fa-twitter"></i></a>
+          <a class="social-icon" href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+          <a class="social-icon" href="#"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-links-col">
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="index.html">Home Page</a></li>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="projects.html">District Projects</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-links-col">
+        <h4>Members</h4>
+        <ul>
+          <li><a href="council.html">District Council</a></li>
+          <li><a href="presidents.html">Past District Presidents</a></li>
+          <li><a href="https://leo-nexus-portal.vercel.app/#/login" target="_blank">Leo Nexus Portal</a></li>
+          <li><a href="admin.html">Local Admin Panel</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-newsletter">
+        <h4>Subscribe to Newsletter</h4>
+        <p>Get latest monthly updates, service reports, and cabinet announcements directly to your inbox.</p>
+        <div class="newsletter-form">
+          <input type="email" placeholder="Your Email Address" id="footer-newsletter-email">
+          <button onclick="alert('Thank you for subscribing!')">Join</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p>&copy; 2026 Leo District 306 D1. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="seeds.js"></script>
+  <script src="supabase-db.js"></script>
+  <script src="auth.js"></script>
+  <script src="common.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
