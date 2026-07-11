@@ -313,6 +313,662 @@ function clearActivityLogs() {
 
 // ── EDITOR MODALS ACTIONS ───────────────────────────────────
 
+function openEditorModal(section, recordId = null) {
+  // Validate RBAC permissions before opening forms
+  if (currentUser.role === 'vieweradmin') {
+    alert('Security Exception: Viewer Admin has read-only access. Form is disabled.');
+    return;
+  }
+
+  // Specific section checks
+  if (section === 'council' && !checkPermission('edit_council')) {
+    alert('Access Denied: Your admin role does not permit modifying Council Officers.');
+    return;
+  }
+  if (section === 'projects' && !checkPermission('edit_projects')) {
+    alert('Access Denied: Your admin role does not permit modifying Projects.');
+    return;
+  }
+  if (section === 'presidents' && !checkPermission('edit_presidents')) {
+    alert('Access Denied: Your admin role does not permit modifying Presidents.');
+    return;
+  }
+  if (section === 'clubs' && !checkPermission('edit_clubs')) {
+    alert('Access Denied: Your admin role does not permit modifying Clubs.');
+    return;
+  }
+  if (section === 'governors' && !checkPermission('edit_council')) {
+    alert('Access Denied: Your admin role does not permit modifying Past District Presidents.');
+    return;
+  }
+  if (section === 'blogs' && !checkPermission('edit_projects')) {
+    alert('Access Denied: Your admin role does not permit modifying District Blogs.');
+    return;
+  }
+  if (section !== 'blogs' && currentUser.role === 'blog_editor') {
+    alert('Security Violation: Blog Editors are restricted to managing blog posts.');
+    return;
+  }
+  if (section === 'users' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify user accounts.');
+    return;
+  }
+  if (section === 'logos-manage' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify PDP logos.');
+    return;
+  }
+  if (section === 'club-logos-manage' && (!currentUser || currentUser.role !== 'superadmin')) {
+    alert('Access Denied: Only Super Admin can register or modify Club logos.');
+    return;
+  }
+
+  editorActiveSection = section;
+  editingRecordId = recordId;
+  editorImageCache = {};
+
+  const modal = document.getElementById('editor-modal');
+  const title = document.getElementById('editor-title');
+  const form = document.getElementById('editor-form');
+  if (!modal || !form) return;
+
+  let displayLabel = section.toUpperCase();
+  if (section === 'governors') displayLabel = 'PAST DISTRICT PRESIDENT';
+  if (section === 'blogs') displayLabel = 'DISTRICT BLOG';
+  if (section === 'users') displayLabel = 'USER ACCOUNT';
+  if (section === 'logos-manage') displayLabel = 'PDP LOGO';
+  if (section === 'club-logos-manage') displayLabel = 'CLUB LOGO';
+  title.innerText = recordId ? `Edit ${displayLabel} Record` : `Add New ${displayLabel} Record`;
+  
+  let key = '';
+  if (section === 'council') key = STORAGE_KEYS.COUNCIL;
+  if (section === 'projects') key = STORAGE_KEYS.PROJECTS;
+  if (section === 'presidents') key = STORAGE_KEYS.PRESIDENTS;
+  if (section === 'clubs') key = STORAGE_KEYS.CLUBS;
+  if (section === 'governors') key = STORAGE_KEYS.GOVERNORS;
+  if (section === 'blogs') key = STORAGE_KEYS.BLOGS;
+  if (section === 'users') key = STORAGE_KEYS.USERS;
+  if (section === 'logos-manage') key = STORAGE_KEYS.LOGOS;
+  if (section === 'club-logos-manage') key = STORAGE_KEYS.CLUB_LOGOS;
+
+  const records = getCollection(key);
+  const data = recordId ? records.find(r => r.id === recordId) : {};
+
+  // Build inputs dynamically
+  let html = '';
+
+  if (section === 'council') {
+    html = `
+      <div class="form-row">
+        <div class="input-group">
+          <label>Full Name *</label>
+          <input type="text" id="c-name" value="${data.name || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Designation / Role *</label>
+          <input type="text" id="c-role" placeholder="e.g. Zonal Director" value="${data.role || ''}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Committee / Department</label>
+          <input type="text" id="c-tag" placeholder="e.g. Zone A1, IT, Sports" value="${data.tag || ''}">
+        </div>
+        <div class="input-group">
+          <label>Role Class Type *</label>
+          <select id="c-type">
+            <option value="exec" ${data.type === 'exec' ? 'selected' : ''}>Executive Committee</option>
+            <option value="chief" ${data.type === 'chief' ? 'selected' : ''}>Chief Coordinator</option>
+            <option value="directors" ${data.type === 'directors' ? 'selected' : ''}>Director</option>
+            <option value="officers" ${data.type === 'officers' ? 'selected' : ''}>Officer</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Profile Image File</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'photo')">
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="c-status">
+            <option value="Published" ${data.status === 'Published' ? 'selected' : ''}>Published</option>
+            <option value="Draft" ${data.status === 'Draft' ? 'selected' : ''}>Draft</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Year Term *</label>
+          <select id="c-year">
+            <option value="2026/2027" ${data.year === '2026/2027' ? 'selected' : ''}>2026/2027</option>
+            <option value="2025/2026" ${data.year === '2025/2026' ? 'selected' : ''}>2025/2026</option>
+            <option value="2027/2028" ${data.year === '2027/2028' ? 'selected' : ''}>2027/2028</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Display Order Priority *</label>
+          <input type="number" id="c-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+      </div>
+      
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 90px; height: 90px; border-radius: 16px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+    `;
+  } 
+  else if (section === 'projects') {
+    html = `
+      <div class="form-row">
+        <div class="input-group">
+          <label>Project Title *</label>
+          <input type="text" id="p-title" value="${data.title || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Category *</label>
+          <select id="p-category">
+            <option value="youth" ${data.category === 'youth' ? 'selected' : ''}>Youth</option>
+            <option value="hunger" ${data.category === 'hunger' ? 'selected' : ''}>Hunger</option>
+            <option value="environment" ${data.category === 'environment' ? 'selected' : ''}>Environment</option>
+            <option value="vision" ${data.category === 'vision' ? 'selected' : ''}>Vision</option>
+            <option value="other" ${data.category === 'other' ? 'selected' : ''}>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Project Lead Chairperson *</label>
+          <input type="text" id="p-chair" value="${data.chairperson || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Organizing Committee</label>
+          <input type="text" id="p-committee" value="${data.organizingCommittee || ''}">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Description *</label>
+        <textarea id="p-desc" required>${data.desc || ''}</textarea>
+      </div>
+      <div class="input-group">
+        <label>Objectives</label>
+        <textarea id="p-objectives">${data.objectives || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Date *</label>
+          <input type="date" id="p-date" value="${data.date || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Time</label>
+          <input type="text" placeholder="e.g. 09:00 AM" id="p-time" value="${data.time || ''}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Venue *</label>
+          <input type="text" id="p-venue" value="${data.venue || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Cover Banner Image</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'cover')">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Registration Link</label>
+          <input type="text" placeholder="https://..." id="p-reglink" value="${data.registrationLink || ''}">
+        </div>
+        <div class="input-group">
+          <label>Report Link</label>
+          <input type="text" placeholder="https://..." id="p-replink" value="${data.reportLink || ''}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Partner Organizations</label>
+          <input type="text" placeholder="Co-partners" id="p-partners" value="${data.partnerOrganizations || ''}">
+        </div>
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="p-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Project Status</label>
+          <select id="p-status">
+            <option value="Upcoming" ${data.status === 'Upcoming' ? 'selected' : ''}>Upcoming</option>
+            <option value="Ongoing" ${data.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+            <option value="Completed" ${data.status === 'Completed' ? 'selected' : ''}>Completed</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Publication Status</label>
+          <select id="p-pubstatus">
+            <option value="Published" ${data.publicationStatus === 'Published' ? 'selected' : ''}>Published</option>
+            <option value="Draft" ${data.publicationStatus === 'Draft' ? 'selected' : ''}>Draft</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+  else if (section === 'presidents') {
+    html = `
+      <div class="form-row">
+        <div class="input-group">
+          <label>Full Name *</label>
+          <input type="text" id="pr-name" value="${data.name || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Leo Club Name *</label>
+          <input type="text" id="pr-club" value="${data.clubName || ''}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Designation *</label>
+          <input type="text" id="pr-pos" value="${data.position || 'Club President'}" required>
+        </div>
+        <div class="input-group">
+          <label>Year Term *</label>
+          <select id="pr-year">
+            <option value="2026/2027" ${data.year === '2026/2027' ? 'selected' : ''}>2026/2027</option>
+            <option value="2025/2026" ${data.year === '2025/2026' ? 'selected' : ''}>2025/2026</option>
+            <option value="2027/2028" ${data.year === '2027/2028' ? 'selected' : ''}>2027/2028</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Region / Area</label>
+          <input type="text" id="pr-region" value="${data.region || ''}">
+        </div>
+        <div class="input-group">
+          <label>Profile Image File</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'photo')">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Contact Number</label>
+          <input type="text" id="pr-phone" value="${data.phone || ''}">
+        </div>
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" id="pr-email" value="${data.email || ''}">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Short Bio Description</label>
+        <textarea id="pr-bio">${data.bio || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="pr-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="pr-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 90px; height: 90px; border-radius: 16px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  else if (section === 'clubs') {
+    html = `
+      <div class="form-row">
+        <div class="input-group">
+          <label>Leo Club Name *</label>
+          <input type="text" id="cl-name" value="${data.name || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Sponsoring Lions Club *</label>
+          <input type="text" id="cl-sponsor" value="${data.sponsor || ''}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Region / Area *</label>
+          <input type="text" placeholder="e.g. Region 3" id="cl-region" value="${data.region || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Chartered Date *</label>
+          <input type="date" id="cl-charter" value="${data.charteredDate || ''}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>President Name *</label>
+          <input type="text" id="cl-pres" value="${data.president || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Secretary Name</label>
+          <input type="text" id="cl-sec" value="${data.secretary || ''}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Treasurer Name</label>
+          <input type="text" id="cl-treas" value="${data.treasurer || ''}">
+        </div>
+        <div class="input-group">
+          <label>Lions Club Advisor Name</label>
+          <input type="text" id="cl-advisor" value="${data.advisor || ''}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Club Contact Email</label>
+          <input type="email" id="cl-email" value="${data.email || ''}">
+        </div>
+        <div class="input-group">
+          <label>Contact Phone</label>
+          <input type="text" id="cl-phone" value="${data.phone || ''}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Club Logo</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'logo')">
+        </div>
+        <div class="input-group">
+          <label>Club Banner</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'banner')">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Club Description</label>
+        <textarea id="cl-desc">${data.desc || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Active Members Count *</label>
+          <input type="number" id="cl-members" value="${data.members || 20}" required>
+        </div>
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="cl-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Status</label>
+        <select id="cl-status">
+          <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+          <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+        </select>
+      </div>
+    `;
+  }
+  else if (section === 'governors') {
+    html = `
+      <div class="form-row">
+        <div class="input-group">
+          <label>Full Name *</label>
+          <input type="text" id="g-name" value="${data.name || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Year Term *</label>
+          <input type="text" placeholder="e.g. 2024/2025" id="g-year" value="${data.year || ''}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Theme / Home Club *</label>
+          <input type="text" id="g-theme" value="${data.theme || ''}" required>
+        </div>
+        <div class="input-group">
+          <label>Theme Icon (FontAwesome class name) *</label>
+          <input type="text" placeholder="e.g. fa-sun, fa-heart" id="g-logo" value="${data.logo || 'fa-scroll'}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Profile Image File</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'photo')">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Key Achievement (Optional)</label>
+        <textarea id="g-achievement">${data.achievement || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="g-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="g-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 90px; height: 90px; border-radius: 16px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  else if (section === 'blogs') {
+    html = `
+      <div class="input-group">
+        <label>Blog Title *</label>
+        <input type="text" id="b-title" value="${data.title || ''}" required style="font-size:1.1rem; font-weight:600;">
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Author / Publisher *</label>
+          <input type="text" id="b-author" value="${data.author || 'District Editorial Panel'}" required>
+        </div>
+        <div class="input-group">
+          <label>Publish Date *</label>
+          <input type="date" id="b-date" value="${data.date || new Date().toISOString().split('T')[0]}" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Cover Photo File</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'photo')">
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Article Content *</label>
+        <textarea id="b-content" required style="height: 180px;">${data.content || ''}</textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="b-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="b-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.photo ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div style="width: 120px; height: 75px; border-radius: 12px; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4);">
+          <img id="crop-preview-img" src="${data.photo || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  else if (section === 'users') {
+    html = `
+      <div class="input-group">
+        <label>Username *</label>
+        <input type="text" id="u-username" value="${data.username || ''}" required placeholder="e.g. janesmith" style="font-size:1.1rem; font-weight:600;" ${recordId ? 'readonly' : ''}>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Password *</label>
+          <input type="text" id="u-password" value="${data.password || ''}" required placeholder="e.g. pass123">
+        </div>
+        <div class="input-group">
+          <label>Full Name / Publisher Label *</label>
+          <input type="text" id="u-label" value="${data.label || ''}" required placeholder="e.g. Leo Jane Smith">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>User Role *</label>
+          <select id="u-role">
+            <option value="blog_editor" ${data.role === 'blog_editor' ? 'selected' : ''}>Blog Publisher (blog_editor)</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+  else if (section === 'logos-manage' || section === 'club-logos-manage') {
+    html = `
+      <div class="input-group">
+        <label>Logo Name / Label *</label>
+        <input type="text" id="logo-name" value="${data.name || ''}" required placeholder="e.g. Logo 1995/1996" style="font-size:1.1rem; font-weight:600;">
+      </div>
+      <div class="form-row">
+        <div class="input-group">
+          <label>Logo Image File *</label>
+          <input type="file" accept="image/*" onchange="cacheFile(this, 'image')" ${recordId ? '' : 'required'}>
+        </div>
+      </div>
+      
+      <!-- Image Crop & Positioning Widget -->
+      <div id="image-adjust-widget" class="glass-panel" style="display: ${data.image ? 'flex' : 'none'}; padding: 15px; margin: 15px 0; border-radius: 12px; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.08);">
+        <div id="crop-preview-container" style="width: ${data.frameType === 'rectangle' ? '120px' : '75px'}; height: ${data.frameType === 'rectangle' ? '64px' : '75px'}; border-radius: ${data.frameType === 'rectangle' ? '8px' : '50%'}; overflow: hidden; border: 2px solid var(--color-gold); display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: rgba(0,0,0,0.4); transition: all 0.2s ease;">
+          <img id="crop-preview-img" src="${data.image || ''}" style="width: 100%; height: 100%; object-fit: cover; transform: scale(${data.photoScale || 1}); object-position: ${data.photoX || 50}% ${data.photoY || 50}%;">
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px; flex-grow: 1;">
+          <h5 style="font-family:var(--font-heading); color: #fff; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 5px;">Position & Zoom adjustment</h5>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Zoom</label>
+            <input type="range" id="crop-zoom" min="1" max="2.5" step="0.05" value="${data.photoScale || 1}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan X</label>
+            <input type="range" id="crop-x" min="0" max="100" step="1" value="${data.photoX || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label style="font-size: 0.7rem; color: #9e8070; width: 60px;">Pan Y</label>
+            <input type="range" id="crop-y" min="0" max="100" step="1" value="${data.photoY || 50}" oninput="updateCropPreview()" style="flex-grow: 1; accent-color: var(--color-gold);">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="input-group">
+          <label>Frame Type *</label>
+          <select id="logo-frame-type" onchange="updateCropPreviewFrame()">
+            <option value="circle" ${data.frameType !== 'rectangle' ? 'selected' : ''}>Circle Frame</option>
+            <option value="rectangle" ${data.frameType === 'rectangle' ? 'selected' : ''}>Rectangle Frame</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Display Order *</label>
+          <input type="number" id="logo-order" value="${data.displayOrder || records.length + 1}" required>
+        </div>
+        <div class="input-group">
+          <label>Status</label>
+          <select id="logo-status">
+            <option value="Active" ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+            <option value="Inactive" ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="modal-footer-btns">
+      <button type="button" class="btn-secondary" onclick="closeEditorModal()" style="margin-right:10px;">Cancel</button>
+      <button type="submit" class="btn-primary">Save Changes</button>
+    </div>
+  `;
+
+  form.innerHTML = html;
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
 function editRecord(section, recordId) {
   openEditorModal(section, recordId);
 }
