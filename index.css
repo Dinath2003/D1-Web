@@ -716,10 +716,13 @@ body {
 }
 
 .card-live-panel iframe {
-  width: 100%;
-  height: 100%;
+  width: 400%;
+  height: 400%;
   border: none;
   background: #0c0404;
+  transform: scale(0.25);
+  transform-origin: 0 0;
+  pointer-events: none;
 }
 
 .coming-soon-mockup {
