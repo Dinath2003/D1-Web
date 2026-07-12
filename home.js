@@ -64,6 +64,36 @@ function renderPublicClubLogosMarquee() {
   });
 }
 
+// ── LIVE IFRAMES RESPONSIVE SCALING ─────────────────────────
+function scaleLiveIframes() {
+  const iframes = document.querySelectorAll('.card-live-panel iframe');
+  iframes.forEach(iframe => {
+    const parent = iframe.parentElement;
+    if (!parent) return;
+    
+    const parentWidth = parent.clientWidth;
+    const parentHeight = parent.clientHeight;
+    if (parentWidth === 0 || parentHeight === 0) return;
+
+    // Use a standard virtual desktop viewport width and height
+    const virtualWidth = 1200;
+    const virtualHeight = 800;
+
+    iframe.style.width = virtualWidth + 'px';
+    iframe.style.height = virtualHeight + 'px';
+    iframe.style.position = 'absolute';
+    iframe.style.top = '0';
+    iframe.style.left = '0';
+
+    // Calculate scale factor to fit the container exactly
+    const scaleX = parentWidth / virtualWidth;
+    const scaleY = parentHeight / virtualHeight;
+
+    iframe.style.transform = `scale(${scaleX}, ${scaleY})`;
+    iframe.style.transformOrigin = '0 0';
+  });
+}
+
 // ── INITIALIZATION ──────────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
   // Sync club logos from Supabase (if configured)
@@ -71,6 +101,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   renderPublicClubLogosMarquee();
 
   runCounters();
+  
+  scaleLiveIframes();
+  // Call again after a short delay to handle rendering settles
+  setTimeout(scaleLiveIframes, 250);
 
   // Mouse tilt tracking for 3D Mythical Crest
   const heroCrest = document.getElementById('hero-mythical-crest');
@@ -90,3 +124,6 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
+
+window.addEventListener('resize', scaleLiveIframes);
+
