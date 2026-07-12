@@ -266,8 +266,7 @@
         </h2>
 
         <div class="agex-features-grid">
-          
-          <!-- Card 1: DP - DVP Calendar -->
+                 <!-- Card 1: DP - DVP Calendar -->
           <div class="agex-feature-card glass-panel">
             <span class="card-badge">Live Portal</span>
             <a href="https://leo-calendar-sw2b.vercel.app/" target="_blank" class="card-title-link">
@@ -275,49 +274,61 @@
             </a>
             <p>Access our live event calendars. Click the title to open the full calendar workspace.</p>
             <div class="card-live-panel">
-              <iframe src="https://leo-calendar-sw2b.vercel.app/" loading="lazy"></iframe>
+              <div class="coming-soon-mockup" id="calendar-placeholder" style="position: absolute; inset: 0; z-index: 2; background: rgba(13,2,4,0.95); transition: opacity 0.5s ease;">
+                <div class="coming-soon-icon-circle animate-pulse">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </div>
+                <h4>Portal Loading...</h4>
+                <p>Establishing secure connection</p>
+                <div class="coming-soon-loader">
+                  <div class="coming-soon-loader-bar"></div>
+                </div>
+              </div>
+              <iframe src="https://leo-calendar-sw2b.vercel.app/" loading="lazy" onload="const el = document.getElementById('calendar-placeholder'); if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 500); }"></iframe>
             </div>
           </div>
 
           <!-- Card 2: Leo Nexus Portal -->
           <div class="agex-feature-card glass-panel">
-            <span class="card-badge">Coming Soon</span>
+            <span class="card-badge">Live Portal</span>
             <a href="https://leo-nexus-portal.vercel.app/" target="_blank" class="card-title-link">
               <h3>Leo Nexus Portal <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 5px; color: var(--color-gold);"></i></h3>
             </a>
             <p>Access the core Leo clubs and member database. Click the title to open the portal.</p>
             <div class="card-live-panel">
-              <div class="coming-soon-mockup">
+              <div class="coming-soon-mockup" id="nexus-placeholder" style="position: absolute; inset: 0; z-index: 2; background: rgba(13,2,4,0.95); transition: opacity 0.5s ease;">
                 <div class="coming-soon-icon-circle animate-pulse">
                   <i class="fa-solid fa-anchor"></i>
                 </div>
-                <h4>Portal Coming Soon</h4>
-                <p>Unified Nexus Workspace</p>
+                <h4>Portal Loading...</h4>
+                <p>Establishing secure connection</p>
                 <div class="coming-soon-loader">
                   <div class="coming-soon-loader-bar"></div>
                 </div>
               </div>
+              <iframe src="https://leo-nexus-portal.vercel.app/" loading="lazy" onload="const el = document.getElementById('nexus-placeholder'); if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 500); }"></iframe>
             </div>
           </div>
 
           <!-- Card 3: Leo Learning Management System -->
           <div class="agex-feature-card glass-panel">
-            <span class="card-badge">Coming Soon</span>
+            <span class="card-badge">Live Portal</span>
             <a href="https://leo-lms.vercel.app/" target="_blank" class="card-title-link">
               <h3>Leo LMS <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 5px; color: var(--color-gold);"></i></h3>
             </a>
             <p>Online training modules, resources, and leadership certifications for Leos.</p>
             <div class="card-live-panel">
-              <div class="coming-soon-mockup">
-                <div class="coming-soon-icon-circle">
+              <div class="coming-soon-mockup" id="lms-placeholder" style="position: absolute; inset: 0; z-index: 2; background: rgba(13,2,4,0.95); transition: opacity 0.5s ease;">
+                <div class="coming-soon-icon-circle animate-pulse">
                   <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <h4>Portal Coming Soon</h4>
-                <p>Interactive LMS Workspace</p>
+                <h4>Portal Loading...</h4>
+                <p>Establishing secure connection</p>
                 <div class="coming-soon-loader">
                   <div class="coming-soon-loader-bar"></div>
                 </div>
               </div>
+              <iframe src="https://leo-lms.vercel.app/" loading="lazy" onload="const el = document.getElementById('lms-placeholder'); if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 500); }"></iframe>
             </div>
           </div>
 
