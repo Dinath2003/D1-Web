@@ -706,7 +706,7 @@ body {
 .card-live-panel {
   position: relative;
   width: 100%;
-  height: 200px;
+  aspect-ratio: 16 / 10;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(243, 208, 130, 0.12);

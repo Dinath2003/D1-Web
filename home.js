@@ -77,7 +77,7 @@ function scaleLiveIframes() {
 
     // Use a standard virtual desktop viewport width and height
     const virtualWidth = 800;
-    const virtualHeight = 533;
+    const virtualHeight = 500;
 
     iframe.style.width = virtualWidth + 'px';
     iframe.style.height = virtualHeight + 'px';
