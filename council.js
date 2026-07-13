@@ -279,10 +279,14 @@ function filterCouncil() {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync Council from Supabase
-  await syncFromSupabase('council');
+window.addEventListener('DOMContentLoaded', () => {
+  // Render immediately from local cache
   renderPublicCouncil();
+
+  // Async sync in background
+  syncFromSupabase('council').then(updated => {
+    if (updated) renderPublicCouncil();
+  });
 
   const searchInput = document.getElementById('council-search');
   if (searchInput) {

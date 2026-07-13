@@ -115,11 +115,14 @@ function closeBlogDetailModal() {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync Blogs from Supabase
-  await syncFromSupabase('blogs');
-  
+window.addEventListener('DOMContentLoaded', () => {
+  // Render immediately from local cache
   renderPublicBlogs();
+
+  // Async sync in background
+  syncFromSupabase('blogs').then(updated => {
+    if (updated) renderPublicBlogs();
+  });
 
   const searchInput = document.getElementById('blog-search');
   if (searchInput) {

@@ -99,11 +99,14 @@ function filterGovernors() {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync PDP Logos from Supabase
-  await syncFromSupabase('pdpLogos');
-  
+window.addEventListener('DOMContentLoaded', () => {
+  // Render immediately from local cache
   renderPublicGovernors();
+
+  // Async sync in background
+  syncFromSupabase('pdpLogos').then(updated => {
+    if (updated) renderPublicGovernors();
+  });
 
   const searchInput = document.getElementById('gov-search');
   if (searchInput) {

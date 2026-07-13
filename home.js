@@ -95,10 +95,14 @@ function scaleLiveIframes() {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync club logos from Supabase (if configured)
-  await syncFromSupabase('clubLogos');
+window.addEventListener('DOMContentLoaded', () => {
+  // Render immediately from local cache
   renderPublicClubLogosMarquee();
+
+  // Async sync in background
+  syncFromSupabase('clubLogos').then(updated => {
+    if (updated) renderPublicClubLogosMarquee();
+  });
 
   runCounters();
   

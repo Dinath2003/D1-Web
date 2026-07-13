@@ -115,8 +115,12 @@ function filterProjects(cat) {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync projects from Supabase
-  await syncFromSupabase('projects');
+window.addEventListener('DOMContentLoaded', () => {
+  // Render immediately from local cache
   renderPublicProjects();
+
+  // Async sync in background
+  syncFromSupabase('projects').then(updated => {
+    if (updated) renderPublicProjects();
+  });
 });

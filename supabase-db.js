@@ -101,21 +101,26 @@ async function syncFromSupabase(moduleName) {
   if (!client) return false;
 
   try {
-    const { data, error } = await client
-      .from(mapping.tableName)
-      .select('*')
-      .order('displayOrder', { ascending: true });
-
+    let query = client.from(mapping.tableName).select('*');
+    if (moduleName !== 'userAccounts') {
+      query = query.order('displayOrder', { ascending: true });
+    }
+    
+    const { data, error } = await query;
     if (error) throw error;
 
     if (data) {
-      localStorage.setItem(mapping.storageKey, JSON.stringify(data));
-      return true;
+      const old = localStorage.getItem(mapping.storageKey);
+      const freshlyStr = JSON.stringify(data);
+      if (old !== freshlyStr) {
+        localStorage.setItem(mapping.storageKey, freshlyStr);
+        return true; // Data changed
+      }
     }
   } catch (err) {
     console.error(`Supabase Sync Error [${mapping.label}]:`, err);
   }
-  return false;
+  return false; // Data unchanged or error
 }
 
 // Write (create/update) a record to Supabase

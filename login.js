@@ -45,7 +45,7 @@ function handleLoginPageSubmit(e) {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync Custom User Accounts from Supabase
-  await syncFromSupabase('userAccounts');
+window.addEventListener('DOMContentLoaded', () => {
+  // Sync Custom User Accounts from Supabase in background
+  syncFromSupabase('userAccounts');
 });

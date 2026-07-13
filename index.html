@@ -332,24 +332,25 @@
             </div>
           </div>
 
-          <!-- Card 4: Connect One Platform -->
+          <!-- Card 4: Leo Connect -->
           <div class="agex-feature-card glass-panel">
-            <span class="card-badge">Connect One</span>
-            <a href="#" class="card-title-link disabled-link" onclick="event.preventDefault(); alert('Connect One Platform integration is coming soon!')">
-              <h3>Connect One Platform <i class="fa-solid fa-clock-rotate-left" style="font-size: 0.8rem; margin-left: 5px; color: #9e8070;"></i></h3>
+            <span class="card-badge">Live Portal</span>
+            <a href="https://leo-connect-lyart.vercel.app/" target="_blank" class="card-title-link">
+              <h3>Leo Connect <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 5px; color: var(--color-gold);"></i></h3>
             </a>
             <p>Unified communications platform connecting our global community.</p>
             <div class="card-live-panel">
-              <div class="coming-soon-mockup">
+              <div class="coming-soon-mockup" id="connect-placeholder" style="position: absolute; inset: 0; z-index: 2; background: rgba(13,2,4,0.95); transition: opacity 0.5s ease;">
                 <div class="coming-soon-icon-circle animate-pulse">
                   <i class="fa-solid fa-circle-nodes"></i>
                 </div>
-                <h4>Portal Coming Soon</h4>
-                <p>Unified Network Workspace</p>
+                <h4>Portal Loading...</h4>
+                <p>Establishing secure connection</p>
                 <div class="coming-soon-loader">
                   <div class="coming-soon-loader-bar"></div>
                 </div>
               </div>
+              <iframe src="https://leo-connect-lyart.vercel.app/" loading="lazy" onload="const el = document.getElementById('connect-placeholder'); if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 500); }"></iframe>
             </div>
           </div>
 

@@ -1626,8 +1626,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (clubLogosTab) clubLogosTab.style.display = 'block';
   }
 
-  // Fetch from Supabase for all config connections first
-  await syncAllDatabases();
-
+  // Render immediately from local cache
   renderAdminDashboard();
+
+  // Sync in background and re-render
+  syncAllDatabases().then(() => {
+    renderAdminDashboard();
+  });
 });

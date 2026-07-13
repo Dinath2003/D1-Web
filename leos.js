@@ -114,15 +114,22 @@ function renderPublicClubs() {
 }
 
 // ── INITIALIZATION ──────────────────────────────────────────
-window.addEventListener('DOMContentLoaded', async () => {
-  // Sync Club Presidents and Directory from Supabase
-  await Promise.all([
-    syncFromSupabase('clubPresidents'),
-    syncFromSupabase('clubsDirectory')
-  ]);
-
+window.addEventListener('DOMContentLoaded', () => {
+  // Render immediately from local cache
   renderPublicPresidents();
   renderPublicClubs();
+
+  // Async sync in background
+  Promise.all([
+    syncFromSupabase('clubPresidents'),
+    syncFromSupabase('clubsDirectory')
+  ]).then(results => {
+    const updated = results.some(Boolean);
+    if (updated) {
+      renderPublicPresidents();
+      renderPublicClubs();
+    }
+  });
 
   const searchInput = document.getElementById('leo-search');
   if (searchInput) searchInput.addEventListener('input', renderPublicClubs);
