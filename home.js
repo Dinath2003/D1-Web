@@ -130,4 +130,5 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 window.addEventListener('resize', scaleLiveIframes);
+window.addEventListener('load', scaleLiveIframes);
 

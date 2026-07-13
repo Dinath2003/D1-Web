@@ -716,6 +716,9 @@ body {
 }
 
 .card-live-panel iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   border: none;
   background: #0c0404;
   pointer-events: none;
