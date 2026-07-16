@@ -310,6 +310,28 @@
             </div>
           </div>
 
+          <!-- Card 6: Leo Nexus Shop -->
+          <div class="agex-feature-card glass-panel">
+            <span class="card-badge">Live Portal</span>
+            <a href="https://leo-nexus-shop.vercel.app/" target="_blank" class="card-title-link">
+              <h3>Leo Nexus Shop <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.8rem; margin-left: 5px; color: var(--color-gold);"></i></h3>
+            </a>
+            <p>Official Leo merchandise, store, and inventory portal for club gear.</p>
+            <div class="card-live-panel">
+              <div class="coming-soon-mockup" id="shop-placeholder" style="position: absolute; inset: 0; z-index: 2; background: rgba(13,2,4,0.95); transition: opacity 0.5s ease;">
+                <div class="coming-soon-icon-circle animate-pulse">
+                  <i class="fa-solid fa-cart-shopping"></i>
+                </div>
+                <h4>Portal Loading...</h4>
+                <p>Establishing secure connection</p>
+                <div class="coming-soon-loader">
+                  <div class="coming-soon-loader-bar"></div>
+                </div>
+              </div>
+              <iframe src="https://leo-nexus-shop.vercel.app/" loading="lazy" onload="scaleLiveIframes(); const el = document.getElementById('shop-placeholder'); if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 500); }"></iframe>
+            </div>
+          </div>
+
           <!-- Card 2: Leo Nexus Portal -->
           <div class="agex-feature-card glass-panel">
             <span class="card-badge">Live Portal</span>
